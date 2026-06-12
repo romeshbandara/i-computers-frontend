@@ -1,10 +1,73 @@
-
+import { useState } from "react";
+import toast from "react-hot-toast";
 export default function TestPage(){
+
+
+    const [status , setStatus] = useState("Idle")
+    const [count , setCount] = useState("1")
+    
+
+    
+
     return(
-        <div className="w-full h-full">
-            <div className="w-[280px] h-[280px] bg-yellow-300 p-[10px] A">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio ut doloremque sint dicta, esse unde repellendus obcaecati quidem tempore rerum aliquid dolorem aperiam atque vero velit veritatis placeat aut, libero, voluptate sed omnis quibusdam. Iure a dolores voluptatibus, laboriosam ab eligendi fuga voluptatem.
+        <div className="w-full h-full flex flex-col items-center justify-center">
+            <h1 className="text-3xl font-bold">{status}</h1>
+            <div className="w-75 h-[50px] flex items-center justify-center">
+
+                <button onClick={
+                    () => {
+                        //status = "On";
+                        setStatus("On");
+                        toast.success("Status is now On");
+                        
+                        }
+
+                    } className="p-2 text-white m-2 bg-green-600">Turn On</button>
+
+                <button onClick={() => {
+                                // status = "Off"; 
+                                setStatus("Off");
+                                toast.error("Status is now Off");
+                                
+                            }}
+                     className="p-2 text-white m-2 bg-red-600">Turn Off</button>
+
+                <button onClick={() => {
+                                // status = "Idle"; 
+                                setStatus("Idle");
+                                toast('Idle Mode On', {icon: '💡',});
+                                
+                            }}
+                         className="p-2 text-white m-2 bg-yellow-600">Idle</button>
             </div>
+            <h1 className="text-3xl font-bold">{count}</h1>
+            <div className="w-75 h-[50px] flex justify-center items-center">
+                <button onClick={() => 
+                    {
+                        setCount("1");
+                    }
+                } className="p-2 text-white m-2 bg-green-600">1
+                
+                </button>
+                <button onClick={() => 
+                    {
+                        setCount("2");
+                    }
+                } className="p-2 text-white m-2 bg-red-600">2
+                
+                </button>
+                <button onClick={() => 
+                    {
+                        setCount("3");
+                        
+                    }
+                } className="p-2 text-white m-2 bg-yellow-600">3
+                
+                </button>
+            </div>
+
+            
+
         </div>
     )
 }
