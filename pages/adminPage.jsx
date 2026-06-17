@@ -1,7 +1,15 @@
 import { Route, Routes, Link } from "react-router-dom";
+import { useEffect } from "react";
+import toast from "react-hot-toast";
+
+
 
 export default function AdminPage(){
+
+    useEffect(() => {toast.success("Welcome to Admin Dashboard")}, [])
+
     return(
+        
         <div className="w-full h-full flex">
 
             <div className="w-[360px] h-full bg-red-900 text-white flex flex-col ">
@@ -16,6 +24,8 @@ export default function AdminPage(){
 
             </div>
             <div className="w-[calc(100%-360px)] h-full bg-yellow-500">
+
+                
 
                 <Routes>
                     <Route path="/" element={<h1>Orders Page</h1>} />
