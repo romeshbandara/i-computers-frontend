@@ -4,6 +4,7 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import axios from "axios";
 import api from "../lib/api";
+import LoadingAnimation from "../src/components/loadingAnimation";
 
 export default function RegisterPage(){
 
@@ -12,12 +13,16 @@ export default function RegisterPage(){
     const [lastName , setLastName] = useState("")
     const [password , setPassword] = useState("")
     const [confirmPassword , setConfirmPassword] = useState("")
+    const [loading , setLoading] = useState(false)
     const navigate = useNavigate()
 
 function handleRegister(){
 
+    setLoading(true)
+
     if(password !== confirmPassword){
         toast.error("Passwords do not match")
+        setLoading(false)
         return
     }
 
@@ -39,11 +44,14 @@ function handleRegister(){
     {
         console.log(err);
         toast.error("Registration failed");
+        setLoading(false)
     })
 }
 
     return(
         <div className="w-full h-full bg-[url(/bg.jpg)] bg-cover flex justify-center items-center">
+            
+            {loading && <LoadingAnimation/>}
 
             <div className="w-[420px] backdrop-blur-md shadow-2xl rounded-lg p-6 flex items-center flex-col gap-3">
 

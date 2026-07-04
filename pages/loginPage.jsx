@@ -4,11 +4,13 @@ import toast from "react-hot-toast";
 import { useState } from "react";
 import axios from "axios";
 import api from "../lib/api";
+import LoadingAnimation from "../src/components/loadingAnimation";
 
 export default function LoginPage(){
 
     const [email , setEmail] = useState("") 
     const [password , setPassword] = useState("")
+    const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
 function handleLogin(){
@@ -19,6 +21,9 @@ function handleLogin(){
     //         password : password
     //     }
     // )
+
+    setLoading(true)
+
     api.post("/users/login" ,
         {
             email : email,
@@ -46,11 +51,14 @@ function handleLogin(){
     {
         console.log(err);
         toast.error("Login failed");
+        setLoading(false)
     })
 }
 
     return(
         <div className="w-full h-full bg-[url(/bg.jpg)] bg-cover flex justify-center items-center">
+
+            {loading && <LoadingAnimation/>}
 
             <div className="w-[450px] h-[580px] backdrop-blur-md shadow-2xl rounded-lg p-4 flex items-center flex-col">
 

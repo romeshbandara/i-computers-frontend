@@ -2,6 +2,9 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 import { Link, useNavigate } from "react-router-dom";
 import uploadMedia from "../../lib/uploadMedia.js";
+import LoadingAnimation from "../../src/components/loadingAnimation.jsx";
+import { CiCircleInfo } from "react-icons/ci";
+import api from "../../lib/api.js";
 
 export default function AddProductForm(){
 
@@ -17,16 +20,35 @@ export default function AddProductForm(){
     const [category, setCategory] = useState("Laptop")
     const [brand, setBrand] = useState("")
     const [model, setModel] = useState("")
+    const [loading,setLoading] = useState(false)
     const navigate = useNavigate()
 
     async function handleSave(){
-
+        setLoading(true)
         const token = localStorage.getItem("token")
         if(token == null){
             toast.error("You are not logged in")
             navigate("/login")
             return
         }
+
+        const productData = {
+            productId : productId,
+            name : name,
+            altNames : [],
+            description : description,
+            images : [],
+            price : price,
+            labledPrice : labelledPrice,
+            stock : stock,
+            isAvailable : isAvailable,
+            category : category,
+            brand : brand,
+            model : model
+
+        }
+
+        
 
         try {
 
@@ -37,15 +59,31 @@ export default function AddProductForm(){
             }
             
             
-            const imageUrls = await Promise.all(imageUploadPromises)
-            console.log(imageUrls)
+            productData.images = await Promise.all(imageUploadPromises)
 
+            productData.altNames - altNames.split(",")
+            
+            const res = await api.post("/products", productData, {
+                headers : {
+                    Authorization : "Bearer "+token
+                }
+            })
+
+            console.log(res)
+
+            toast.success("product added successfully!")
+
+            setLoading(false)
+
+            navigate("/admin/products")
 
             
         } catch (err) {
 
             console.log(err)
-            toast.error("Failed to add product")
+            console.log(err.response.data.error)
+            toast.error("Failed to add product ("+(err.response.data.error)+")")
+            setLoading(false)
             
         }
 
@@ -53,6 +91,8 @@ export default function AddProductForm(){
 
     return(
         <div className="w-full max-h-full flex flex-wrap p-4 items-start overflow-y-scroll">
+
+            {loading && <LoadingAnimation/>}
 
             <div className="w-full h-[100px] bg-white shadow-md rounded-md flex items-center p-4 justify-between mb-8">
 
@@ -82,7 +122,7 @@ export default function AddProductForm(){
 
             <div className="w-[45%] flex flex-col  h-[80px] p-2 mb-2">
 
-                <label className="text-secondary text-lg font-semibold mb-2">Alternative Names</label>
+                <label className="text-secondary text-lg font-semibold mb-2 flex items-center gap-2">Alternative Names <div className="text-xs text-secondary flex items-center gap-1 font-thin tooltip"><CiCircleInfo/><div className="tooltip-text">Comma separated</div></div></label>
                 <input type="text" value={altNames} onChange={(e)=>setAltNames(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4" />
 
             </div>
@@ -147,6 +187,7 @@ export default function AddProductForm(){
                     <option value={"Motherboard"}>Motherboard</option>
                     <option value={"Power Suply"}>Power Suply</option>
                     <option value={"RAM"}>RAM</option>
+                    <option value={"Phone"}>Phone</option>
 
                 </select>
             </div>

@@ -12,7 +12,7 @@ import AddProductForm from "./admin/adminAddProductForm";
 
 export default function AdminPage(){
 
-    useEffect(() => {toast.success("Welcome to Admin Dashboard")}, [])
+    // useEffect(() => {toast.success("Welcome to Admin Dashboard")}, [])
 
     return(
         
@@ -26,9 +26,9 @@ export default function AdminPage(){
 
                 </div>
 
-               <Link to="/admin" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 hover:bg-accent hover:text-white"><IoCartOutline /> Orders</Link>
-               <Link to="/admin/products" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 hover:bg-accent hover:text-white"><BsBox /> Products</Link>
-               <Link to="/admin/users" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 hover:bg-accent hover:text-white"><LuUsersRound/>Users</Link>
+               <Link to="/admin" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 transition-all duration-200 hover:bg-accent hover:text-white"><IoCartOutline /> Orders</Link>
+               <Link to="/admin/products" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 transition-all duration-200 hover:bg-accent hover:text-white"><BsBox /> Products</Link>
+               <Link to="/admin/users" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 transition-all duration-200 hover:bg-accent hover:text-white"><LuUsersRound/>Users</Link>
                
 
             </div>
