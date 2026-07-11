@@ -1,29 +1,36 @@
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import uploadMedia from "../../lib/uploadMedia.js";
 import LoadingAnimation from "../../src/components/loadingAnimation.jsx";
 import { CiCircleInfo } from "react-icons/ci";
 import api from "../../lib/api.js";
 
-export default function AddProductForm(){
-
-    const [productId, setProductId] = useState("")
-    const [name, setName] = useState("")
-    const [altNames, setAltNames] = useState("")
-    const [description, setDescription] = useState("")
+export default function EditProductForm(){
+    const location = useLocation()
+    const [productId, setProductId] = useState(location?.state?.productId||"")
+    const [name, setName] = useState(location?.state?.name||"")
+    const [altNames, setAltNames] = useState(location?.state?.altNames?.join(",")||"")
+    const [description, setDescription] = useState(location?.state?.description||"")
     const [images, setImages] = useState([])
-    const [price, setPrice] = useState("")
-    const [labelledPrice, setLabelledPrice] = useState("")
-    const [stock, setStock] = useState("")
-    const [isAvailable, setIsAvailable] = useState(true)
-    const [category, setCategory] = useState("Laptop")
-    const [brand, setBrand] = useState("")
-    const [model, setModel] = useState("")
+    const [price, setPrice] = useState(location?.state?.price||"")
+    const [labelledPrice, setLabelledPrice] = useState(location?.state?.labledPrice||"")
+    const [stock, setStock] = useState(location?.state?.stock||"")
+    const [isAvailable, setIsAvailable] = useState(location?.state?.isAvailable||true)
+    const [category, setCategory] = useState(location?.state?.category||"Laptop")
+    const [brand, setBrand] = useState(location?.state?.brand||"")
+    const [model, setModel] = useState(location?.state?.model||"")
     const [loading,setLoading] = useState(false)
     const navigate = useNavigate()
 
-    async function handleSave(){
+    if(!location?.state == null){
+        navigate("/admin/products")
+        return
+    }
+
+    console.log(location)
+
+    async function handleUpdate(){
         setLoading(true)
         const token = localStorage.getItem("token")
         if(token == null){
@@ -59,13 +66,20 @@ export default function AddProductForm(){
             }
             
             
-            productData.images = await Promise.all(imageUploadPromises)
+
+           const uploadImageURLs = productData.images = await Promise.all(imageUploadPromises)
+
+           if(uploadImageURLs.length > 0){
+            productData.images = uploadImageURLs
+           }else{
+            productData.images = location?.state?.images||[]
+           }
+
+            
 
             productData.altNames = altNames.split(",")
-
-          
             
-            const res = await api.post("/products", productData, {
+            const res = await api.put("/products/"+productId, productData, {
                 headers : {
                     Authorization : "Bearer "+token
                 }
@@ -73,7 +87,7 @@ export default function AddProductForm(){
 
             console.log(res)
 
-            toast.success("product added successfully!")
+            toast.success("product updated successfully!")
 
             setLoading(false)
 
@@ -84,7 +98,7 @@ export default function AddProductForm(){
 
             console.log(err)
             console.log(err.response.data.error)
-            toast.error("Failed to add product ("+(err.response.data.error)+")")
+            toast.error("Failed to update product ("+(err.response.data.error)+")")
             setLoading(false)
             
         }
@@ -98,11 +112,11 @@ export default function AddProductForm(){
 
             <div className="w-full h-[100px] bg-white shadow-md rounded-md flex items-center p-4 justify-between mb-8">
 
-                <h1 className="text-2xl font-semibold text-secondary">Add Porduct</h1>
+                <h1 className="text-2xl font-semibold text-secondary">Edit Porduct</h1>
 
                 <div className="flex gap-2">
 
-                    <button onClick={handleSave} className="p-2 bg-green-600 text-white rounded-md cursor-pointer hover:bg-green-700">Save</button>
+                    <button onClick={handleUpdate} className="p-2 bg-green-600 text-white rounded-md cursor-pointer hover:bg-green-700">Update</button>
                     <Link to="/admin/products" className="p-2 bg-red-600 text-white rounded-md cursor-pointer hover:bg-red-700">Cancel</Link>
                 </div>
 
@@ -111,7 +125,7 @@ export default function AddProductForm(){
             <div className="w-[15%] flex flex-col  h-[80px] p-2 mb-2">
 
                 <label className="text-secondary text-lg font-semibold mb-2">Product Id</label>
-                <input type="text" value={productId} onChange={(e)=>setProductId(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4" />
+                <input disabled type="text" value={productId} onChange={(e)=>setProductId(e.target.value)} className="w-full h-[40px] rounded-md border-2 border-gray-300 p-2 mb-4" />
 
             </div>
 
