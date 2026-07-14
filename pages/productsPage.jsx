@@ -23,7 +23,7 @@ export default function ProductsPage() {
     },[])
 
     return (
-        <div className="w-full flex flex-wrap p-8 justify-center">
+        <div className="w-full h-[calc(100vh-100px)] overflow-y-scroll flex flex-wrap p-8 justify-center ">
             {loading?<LoadingAnimation/>
             :<>
                {

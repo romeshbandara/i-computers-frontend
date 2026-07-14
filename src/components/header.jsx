@@ -1,3 +1,4 @@
+import { BsCartFill } from "react-icons/bs"
 import { Link } from "react-router-dom"
 
 export default function Header() {
@@ -11,8 +12,8 @@ export default function Header() {
                 <Link to="/products" className="h-full w-full flex items-center justify-center"> Products </Link>
                 <Link to="/about" className="h-full w-full flex items-center justify-center"> About </Link>
             </div>
-            <div className="h-full bg-white w-[200px] ">
-
+            <div className="h-full  flex items-center w-[200px] ">
+                <Link to="/cart" className="text-3xl"><BsCartFill /></Link>
             </div>
         </header>
     )
