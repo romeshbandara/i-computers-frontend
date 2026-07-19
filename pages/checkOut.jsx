@@ -1,12 +1,15 @@
 import { useState } from "react"
-import { addToCart, getCart, getCartTotal } from "../lib/cart"
+import { getCartTotal } from "../lib/cart"
 import getFormattedPrice from "../lib/priceFormat"
 import { FaTrash } from "react-icons/fa"
-import { Link } from "react-router-dom"
+import { Link, useLocation, useNavigate } from "react-router-dom"
 
-export default function CartPage() {
+export default function CheckOutPage() {
 
-    const [cart, setCart] = useState(getCart())
+    const location = useLocation()
+    const navigate = useNavigate()
+    const [cart, setCart] = useState(location.state)
+
 
 
     return (
@@ -19,8 +22,7 @@ export default function CartPage() {
                             <div className="w-[calc(700px-130px)] h-full flex flex-col ml-4 ">
                                 <button className="right-0 top-0 absolute mr-4 mt-2 cursor-pointer hover:text-red-600" onClick={
                                     () => {
-                                        addToCart(item.product, -item.qty)
-                                        setCart(getCart())
+                                        navigate("/products")
                                     }
                                 }><FaTrash /></button>
                                 <h1 className="text-xs text-gray-600">PID:- {item.product.productId}</h1>
@@ -35,18 +37,22 @@ export default function CartPage() {
                                     <div className="w-[120px] h-[50px] border border-accent rounded-md overflow-hidde flex flex-row">
                                         <button className="bg-accent text-white w-[50px] rounded-l-md  hover:bg-black transition-colors duration-100 cursor-pointer" onClick={
                                             () => {
+
                                                 if (item.qty > 1) {
-                                                    addToCart(item.product, -1)
+                                                    const newCart = [...cart]
+                                                    newCart[index].qty -= 1
+                                                    setCart(newCart)
                                                 }
 
-                                                setCart(getCart())
+
                                             }
                                         }>-</button>
                                         <span className="w-[50px] flex items-center justify-center">{item.qty}</span>
                                         <button className="bg-accent text-white w-[50px] rounded-r-md  hover:bg-black cursor-pointer transition-colors duration-100" onClick={
                                             () => {
-                                                addToCart(item.product, 1)
-                                                setCart(getCart())
+                                                const newCart = [...cart]
+                                                newCart[index].qty += 1
+                                                setCart(newCart)
                                             }
                                         }>+</button>
                                     </div>
@@ -63,8 +69,11 @@ export default function CartPage() {
             )}
 
             <div className="w-[1000px] min-h-[100px] shadow-md rounded p-2 overflow-hidden  my-4 flex fixed bottom-4 bg-accent justify-between items-center px-4">
+                <div className="flex gap-4">
+                    <Link  className="bg-green-500 flex justify-center items-center shadow-md  rounded-md text-white border-2 border-transparent hover:bg-black hover:border-white cursor-pointer transition-colors duration-200 px-2 py-2">Place Order</Link>
+                    <Link to={"/overview/"+cart[0].product.productId} className="bg-red-500 flex justify-center items-center shadow-md  rounded-md text-white border-2 border-transparent hover:bg-black hover:border-white cursor-pointer transition-colors duration-200 px-2 py-2">Cancel</Link>
+                </div>
 
-                <Link to="/checkout" state={cart} className="bg-green-500 flex justify-center items-center shadow-md h-12 w-22 rounded-md text-white border-2 border-transparent hover:bg-black hover:border-white cursor-pointer transition-colors duration-200">Checkout</Link>
                 <div>
                     <h1 className="text-white text-lg">Total</h1>
                     <h1 className="text-white text-2xl">{getFormattedPrice(getCartTotal(cart))}</h1>

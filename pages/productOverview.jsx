@@ -1,4 +1,4 @@
-import { useLoaderData, useLocation, useParams } from "react-router-dom"
+import { Link, useLoaderData, useLocation, useParams } from "react-router-dom"
 import api from "../lib/api"
 import { useEffect, useState } from "react"
 import LoadingAnimation from "../src/components/loadingAnimation"
@@ -22,6 +22,8 @@ export default function ProductOverview(){
 
     const [product,setProduct] = useState(location.state)
     const [loading,setLoading] = useState(true)
+
+
     
 
     useEffect(()=>{
@@ -73,12 +75,20 @@ export default function ProductOverview(){
                         
                         <div className="flex gap-6 mt-8">
                             
-                            <button className="bg-accent text-white py-2 px-4 rounded-md hover:bg-black cursor-pointer" onClick={
-                                ()=>{
-                                    const cart = getCart()
-                                    console.log(cart)
-                                }
-                            }>Buy Now</button>
+                            <Link to="/checkout" state={
+                                [
+                                    {
+                                        product : {
+                                            productId : product.productId,
+                                            name: product.name,
+                                            price: product.price,
+                                            labledPrice: product.labledPrice,
+                                            image:product.images[0]
+                                        },
+                                        qty:1
+                                    }
+                                ]
+                            } className="bg-accent text-white py-2 px-4 rounded-md hover:bg-black cursor-pointer" >Buy Now</Link>
                             <button className="bg-green-600 text-white py-2 px-4 rounded-md hover:bg-black cursor-pointer flex items-center gap-2" onClick={
                                 ()=>{
                                     addToCart(product ,1)
