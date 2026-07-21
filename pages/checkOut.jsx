@@ -3,6 +3,7 @@ import { getCartTotal } from "../lib/cart"
 import getFormattedPrice from "../lib/priceFormat"
 import { FaTrash } from "react-icons/fa"
 import { Link, useLocation, useNavigate } from "react-router-dom"
+import OrderModal from "../src/components/orderModal"
 
 export default function CheckOutPage() {
 
@@ -70,7 +71,7 @@ export default function CheckOutPage() {
 
             <div className="w-[1000px] min-h-[100px] shadow-md rounded p-2 overflow-hidden  my-4 flex fixed bottom-4 bg-accent justify-between items-center px-4">
                 <div className="flex gap-4">
-                    <Link  className="bg-green-500 flex justify-center items-center shadow-md  rounded-md text-white border-2 border-transparent hover:bg-black hover:border-white cursor-pointer transition-colors duration-200 px-2 py-2">Place Order</Link>
+                    <OrderModal cart={cart}/>
                     <Link to={"/overview/"+cart[0].product.productId} className="bg-red-500 flex justify-center items-center shadow-md  rounded-md text-white border-2 border-transparent hover:bg-black hover:border-white cursor-pointer transition-colors duration-200 px-2 py-2">Cancel</Link>
                 </div>
 

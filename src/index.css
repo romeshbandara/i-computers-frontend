@@ -16,3 +16,28 @@
     display: block;
     
 }
+
+
+
+::-webkit-scrollbar {
+  width: 10px;                    /* Width of vertical scrollbar */
+  height: 10px;       
+  
+}
+
+/* Background track of the scrollbar */
+::-webkit-scrollbar-track {
+  background: #f3f4f6;            /* Background color of the track */
+  border-radius: 8px;             /* Rounded corners for the track */
+}
+
+/* Draggable thumb/handle */
+::-webkit-scrollbar-thumb {
+  background-color: #4f46e5;      /* Primary color of the handle */
+  border-radius: 8px;             /* Makes the handle rounded */
+  border: 2px solid #f3f4f6;      /* Creates a padding effect around the thumb */
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #4338ca;      /* Darkens color on hover */
+}
