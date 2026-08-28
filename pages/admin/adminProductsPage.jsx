@@ -25,7 +25,7 @@ export default function AdminProudctsPage(){
     }).then((response)=>{
         
         if(isLoading){
-        console.log(response.data)
+        
         setProducts(response.data)
         setIsLoading(false)
         }

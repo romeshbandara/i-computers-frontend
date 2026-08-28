@@ -8,6 +8,7 @@ import { IoCartOutline } from "react-icons/io5";
 import AdminProudctsPage from "./admin/adminProductsPage";
 import AddProductForm from "./admin/adminAddProductForm";
 import EditProductForm from "./admin/adminEditProductForm";
+import AdminOrdersPage from "./admin/adminOrders";
 
 
 export default function AdminPage(){
@@ -37,7 +38,7 @@ export default function AdminPage(){
                 
 
                 <Routes>
-                    <Route path="/" element={<h1>Orders Page</h1>} />
+                    <Route path="/" element={<AdminOrdersPage/>} />
                     <Route path="/products" element={<AdminProudctsPage/>} />
                     <Route path="/users" element={<h1>Users Page</h1>} />
                     <Route path="/add-product" element={<AddProductForm/>}/>
