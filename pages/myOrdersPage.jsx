@@ -1,17 +1,18 @@
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
-import api from "../../lib/api";
+import api from "../lib/api";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { CiEdit, CiTrash } from "react-icons/ci";
-import LoadingAnimation from "../../src/components/loadingAnimation.jsx";
-import getFormattedPrice from "../../lib/priceFormat.js";
-import formatTimestamp from "../../lib/dateFormat.js";
-import AdminOrdersModal from "../../src/components/adminOrderModal.jsx";
+import LoadingAnimation from "../src/components/loadingAnimation.jsx";
+import getFormattedPrice from "../lib/priceFormat.js";
+import formatTimestamp from "../lib/dateFormat.js";
+import AdminOrdersModal from "../src/components/adminOrderModal.jsx";
+import MyOrderModal from "../src/components/myOrderModal.jsx";
 
 
 
-export default function AdminOrdersPage() {
+export default function MyOrdersPage() {
 
 
 
@@ -118,7 +119,7 @@ export default function AdminOrdersPage() {
                                     <td>{getFormattedPrice(item.totalAmount)}</td>
                                     <td>
                                         <div className="text-xl  cursor-pointer flex items-center justify-center gap-2">
-                                            <AdminOrdersModal order={item} refresh={()=>{setIsLoading(true)}}/>
+                                            <MyOrderModal order={item} refresh={()=>{setIsLoading(true)}}/>
                                         </div>
                                         
                                     </td>
@@ -135,7 +136,7 @@ export default function AdminOrdersPage() {
 
             </table>
 
-            <div className="w-[calc(100%-360px)] h-[100px] fixed bottom-2  rounded-md flex items-center p-4 justify-center mt-8">
+            <div className="w-full h-[100px] fixed bottom-2  rounded-md flex items-center p-4 justify-center mt-8">
                 <div className="w-[500px] h-[50px] bg-white shadow-2xl rounded-full flex items-center  overflow-hidden  justify-between mt-8">
                     <button className=" h-[50px] w-[120px] bg-white text-black px-4  rounded-md cursor-pointer hover:bg-accent hover:text-white transition-colors duration-100" onClick={
                         () => {

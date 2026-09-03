@@ -4,6 +4,7 @@ import ProductsPage from "./productsPage.jsx";
 import ProductOverview from "./productOverview.jsx";
 import CartPage from "./cartPage.jsx";
 import CheckOutPage from "./checkOut.jsx";
+import MyOrdersPage from "./myOrdersPage.jsx";
 
 
 export default function HomePage(){
@@ -19,6 +20,7 @@ export default function HomePage(){
                 <Route path="/cart" element={<CartPage/>}/>
                 <Route path="/*" element={<h1>404 Not Found</h1>} />
                 <Route path="/checkout" element={<CheckOutPage/>} />
+                <Route path="/my-orders" element={<MyOrdersPage/>} />
             </Routes>
         </div>
         

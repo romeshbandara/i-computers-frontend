@@ -5,8 +5,9 @@ import getFormattedPrice from "../../lib/priceFormat"
 import formatTimestamp from "../../lib/dateFormat"
 import toast from "react-hot-toast"
 import api from "../../lib/api"
+import { Link } from "react-router-dom"
 
-export default function AdminOrdersModal(props) {
+export default function MyOrderModal(props) {
     const refresh = props.refresh
     const order = props.order
     const [modalIsOpen, setModalIsOpen] = useState(false)
@@ -15,16 +16,16 @@ export default function AdminOrdersModal(props) {
     async function updateOrderStatus() {
         try {
             const token = localStorage.getItem("token")
-            await api.put("/orders/"+order.orderId+"/"+orderStatus, {},{
+            await api.put("/orders/" + order.orderId + "/" + orderStatus, {}, {
                 headers: {
-                    Authorization: "Bearer "+token
+                    Authorization: "Bearer " + token
                 }
             })
             toast.success("Order status updated successfully")
             refresh()
             setModalIsOpen(false)
         } catch (err) {
-            toast.error("Failed to update order status"+err)
+            toast.error("Failed to update order status" + err)
         }
     }
 
@@ -77,15 +78,15 @@ export default function AdminOrdersModal(props) {
                             <span className="text-lg text-center">{order.firstName} {order.lastName} {order.addressLine1} {order.addressLine2} ({order.phone} | {order.secondaryPhone})</span>
                         </div>
                         <div className="w-full h-[50px] flex gap-x-4 justify-center items-center border-t-2 border-black">
-                            <label>Order Status :-</label>
-                            <select value={orderStatus} onChange={(e)=>{
+                            <label className="text-lg text-accent font-semibold">Order Status :- {order.status}</label>
+                            {/* <select value={orderStatus} onChange={(e)=>{
                                 setOrderStatus(e.target.value)
                             }}>
                                 <option value="pending" selected={order.status === "Pending"}>Pending</option>
                                 <option value="processing" selected={order.status === "Processing"}>Processing</option>
                                 <option value="shipped" selected={order.status === "Shipped"}>Shipped</option>
                                 <option value="delivered" selected={order.status === "Delivered"}>Delivered</option>
-                            </select>
+                            </select> */}
                         </div>
                     </div>
                     <div className="w-full h-[100px] gap-[10%] p-4 flex flex-wrap">
@@ -97,21 +98,22 @@ export default function AdminOrdersModal(props) {
                         order.items.map((item, index) => {
                             return (
                                 <>
-                                    <div key={index} className="w-full h-[100px] flex gap-x-4 justify-between items-center border-t-2 border-black overflow-y-scroll p-4">
+                                    <Link to={`/overview/${item.product.productId}`} className="hover:bg-accent hover:text-white transition-colors duration-200">
+                                        <div key={index} className="w-full h-[100px] flex gap-x-4 justify-between items-center border-t-2 border-black overflow-y-scroll p-4">
 
-                                        <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover" />
-                                        <div className="w-[calc(100%-100px)] flex flex-col gap-y-2">
-                                            <h1 className="text-lg font-semibold">{item.product.name}</h1>
-                                            <span className="text-md text-secondary ">{getFormattedPrice(item.product.price)} x {item.qty} = {getFormattedPrice(item.qty * item.product.price)}</span>
+                                            <img src={item.product.image} alt={item.product.name} className="w-16 h-16 object-cover" />
+                                            <div className="w-[calc(100%-100px)] flex flex-col gap-y-2">
+                                                <h1 className="text-lg font-semibold">{item.product.name}</h1>
+                                                <span className="text-md  ">{getFormattedPrice(item.product.price)} x {item.qty} = {getFormattedPrice(item.qty * item.product.price)}</span>
+                                            </div>
+
                                         </div>
-
-                                    </div>
-
+                                    </Link>
                                 </>
                             )
                         })
                     }
-                    {orderStatus !== order.status && 
+                    {orderStatus !== order.status &&
                         <button className="absolute top-50 right-5 px-4 py-3 cursor-pointer bg-green-600 rounded-2xl flex justify-center items-center text-white font-semibold  hover:bg-secondary/80 hover:text-white transition-colors duration-100" onClick={
                             updateOrderStatus
                         }>

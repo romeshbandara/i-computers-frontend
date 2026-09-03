@@ -117,6 +117,14 @@ function handleRegister(){
                         onChange={(e) => {
                                 setConfirmPassword(e.target.value);
                             }}
+
+
+                            onKeyDown={(e)=>{
+                                if(e.key === "Enter"){
+                                    handleRegister()
+                                }
+                            }}
+
                         type="password" autoComplete="new-password" placeholder="Confirm your password" className="w-full h-[40px] text-primary rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 " />
                 </div>
 

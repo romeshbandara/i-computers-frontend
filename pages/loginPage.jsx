@@ -2,11 +2,12 @@ import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
 import { useState } from "react";
-import axios from "axios";
 import api from "../lib/api";
 import LoadingAnimation from "../src/components/loadingAnimation";
 
 export default function LoginPage(){
+
+    
 
     const [email , setEmail] = useState("") 
     const [password , setPassword] = useState("")
@@ -80,10 +81,16 @@ function handleLogin(){
                     onChange={(e) => {
                             setPassword(e.target.value);
                         }}
+
+                        onKeyDown={(e) => {
+                            if (e.key === "Enter") {
+                                handleLogin();
+                            }}}
+
                     type="password" placeholder="Enter your password" className="w-full h-[40px] text-primary mb-2 rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 " />
                 <p className="w-full text-right">Forget Password? reset <Link to="/reset-password" className="text-accent font-bold hover:underline">here</Link></p>
                 
-                <button onClick={handleLogin}  className="w-full h-[40px] bg-accent text-primary font-bold rounded-lg  mt-5 hover:bg-accent/80 cursor-pointer">Login</button>
+                <button onClick={handleLogin} type="submit" className="w-full h-[40px] bg-accent text-primary font-bold rounded-lg  mt-5 hover:bg-accent/80 cursor-pointer">Login</button>
                 <p className="w-full text-right">Don't have an account? <Link to="/register" className="text-accent font-bold hover:underline">Register</Link></p>
                 
                 <button className="w-full h-[40px] bg-secondary/50 text-primary font-bold rounded-lg border-3 border-secondary mt-5 flex items-center justify-center gap-3 hover:bg-secondary/70 cursor-pointer"><FcGoogle />Login with Google</button>
