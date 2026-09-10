@@ -23,7 +23,7 @@ export default function ProductOverview(){
     const [product,setProduct] = useState(location.state)
     const [loading,setLoading] = useState(true)
 
-
+    
     
 
     useEffect(()=>{
@@ -31,7 +31,7 @@ export default function ProductOverview(){
             setProduct(response.data)
             setLoading(false)
         }).catch(()=>{
-            toastst.error("error load product")
+            toast.error("error load product")
             setProduct(null)
         })
     })

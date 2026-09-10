@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
@@ -11,25 +11,65 @@ import AdminPage from '../pages/adminPage'
 import TestPage from '../pages/testPage'
 import { Routes, Route } from 'react-router-dom'
 import { Toaster } from 'react-hot-toast'
+import UserContext from './context/userContext'
+import api from '../lib/api.js'
+import toast from 'react-hot-toast'
+import { BiLogoQuora } from 'react-icons/bi'
+import LoadingAnimation from './components/loadingAnimation.jsx'
 
 
 function App() {
- 
+
+  const [user, setUser] = useState(null);
+  const [userLoadingFinished, setUserLoadingFinished] = useState(false);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+
+    api.get("/users/me", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((res) => {
+        setUser(res.data.user);
+        setUserLoadingFinished(true);
+
+      })
+      .catch(() => {
+        toast.error("Please login again");
+        localStorage.removeItem("token");
+        setUser(null);
+        setUserLoadingFinished(true);
+
+      });
+  }, [userLoadingFinished]);
+
+
 
   return (
     <>
-    <div className='w-full h-screen bg-primary'>
 
-    <Toaster position="top-right"/>
+      <UserContext value={{
+        user: user,
+        setUser: setUser,
+        userLoadingFinished: userLoadingFinished,
+        setUserLoadingFinished: setUserLoadingFinished
 
-      <Routes>
-        <Route path="/*" element={<HomePage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/admin/*" element={<AdminPage />} />
-        <Route path="/test" element={<TestPage />} />
-      </Routes>
-    </div>
+      }}>
+        <div className='w-full h-screen bg-primary'>
+
+          <Toaster position="top-right" />
+
+          <Routes>
+            <Route path="/*" element={<HomePage />} />
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/register" element={<RegisterPage />} />
+            <Route path="/admin/*" element={<AdminPage />} />
+            <Route path="/test" element={<TestPage />} />
+          </Routes>
+        </div>
+      </UserContext>
     </>
   )
 }

@@ -1,20 +1,21 @@
 import { Link, useNavigate } from "react-router-dom";
 import { FcGoogle } from "react-icons/fc";
 import toast from "react-hot-toast";
-import { useState } from "react";
+import { useState, useContext } from "react";
 import api from "../lib/api";
 import LoadingAnimation from "../src/components/loadingAnimation";
+import UserContext from "../src/context/userContext";
 
 export default function LoginPage(){
 
     
-
+    const { loadUser } = useContext(UserContext);
     const [email , setEmail] = useState("") 
     const [password , setPassword] = useState("")
     const [loading, setLoading] = useState(false)
     const navigate = useNavigate()
 
-function handleLogin(){
+ function handleLogin(){
 
     // axios.post("http://localhost:3000/users/login" ,
     //     {
@@ -25,7 +26,7 @@ function handleLogin(){
 
     setLoading(true)
 
-    api.post("/users/login" ,
+    api.post("/users/login/" ,
         {
             email : email,
             password : password
@@ -38,13 +39,14 @@ function handleLogin(){
 
         //browser store
         localStorage.setItem("token" , res.data.token);    
+        
 
         if(res.data.isAdmin){
             //admin dashboard
             navigate("/admin")
         }else{
             //home page
-            navigate("/")
+            window.location.href = "/"
         }
         
     }

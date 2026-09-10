@@ -3,15 +3,17 @@ import { addToCart, getCart, getCartTotal } from "../lib/cart"
 import getFormattedPrice from "../lib/priceFormat"
 import { FaTrash } from "react-icons/fa"
 import { Link } from "react-router-dom"
+import { TbMoodEmptyFilled } from "react-icons/tb"
 
 export default function CartPage() {
 
     const [cart, setCart] = useState(getCart())
 
+    console.log(cart)
 
     return (
         <div className="w-full h-[calc(100vh-100px)]  overflow-y-scroll flex flex-col items-center pb-[180px]">
-            {cart.map(
+            {cart[0] == null ? <div className="w-full h-full text-2xl flex flex-col justify-center items-center gap-4"><TbMoodEmptyFilled className="text-9xl"/><h1 className="text-secondary">Cart is empty</h1></div> : cart.map(
                 (item, index) => {
                     return (
                         <div key={index} className="w-[700px] min-h-[150px] shadow-md rounded p-2 overflow-hidden bg-white my-4 flex relative">

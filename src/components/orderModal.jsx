@@ -1,19 +1,22 @@
 import { Link, useNavigate } from "react-router-dom";
 import Modal from 'react-modal'
-import { useState } from "react";
+import { useContext, useState } from "react";
 import getFormattedPrice from "../../lib/priceFormat";
 import { getCartTotal } from "../../lib/cart";
 import { SiAssemblyscript } from "react-icons/si";
 import toast from "react-hot-toast";
 import api from "../../lib/api";
+import UserContext from "../context/userContext";
 
 export default function OrderModal(props) {
+
+    const userData = useContext(UserContext)
     const [modalIsOpen, setModalIsOpen] = useState(false)
-    const [firstName, setFirstName] = useState("")
-    const [lastName, setLastName] = useState("")
-    const [addressLine1, setAddressLine1] = useState("")
-    const [addressLine2, setAddressLine2] = useState("")
-    const [city, setCity] = useState("")
+    const [firstName, setFirstName] = useState(userData.user?.firstName || "")
+    const [lastName, setLastName] = useState(userData.user?.lastName || "")
+    const [addressLine1, setAddressLine1] = useState( "")
+    const [addressLine2, setAddressLine2] = useState( "")
+    const [city, setCity] = useState( "")
     const [postalCode, setPostalCode] = useState("")
     const [phoneNumber, setPhoneNumber] = useState("")
     const [secondaryPhoneNumber, setSecondaryPhoneNumber] = useState("")
