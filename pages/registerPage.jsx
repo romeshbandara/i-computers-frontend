@@ -53,7 +53,7 @@ function handleRegister(){
             
             {loading && <LoadingAnimation/>}
 
-            <div className="w-[420px] backdrop-blur-md shadow-2xl rounded-lg p-6 flex items-center flex-col gap-3">
+            <div className="w-[350px] lg:w-[420px] backdrop-blur-md shadow-2xl rounded-lg p-6 flex items-center flex-col gap-3">
 
                 <img src="logo.webp" className="w-[120px] h-[70px] object-cover bg-accent/40 rounded-lg mb-1" />
                 
@@ -65,7 +65,7 @@ function handleRegister(){
                     onChange={(e)=>{
                         setEmail(e.target.value);
                     }}
-                    type="email" autoComplete="email" placeholder="Enter your email" className="w-full h-[40px] text-primary rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2" />
+                    type="email" autoComplete="email" placeholder="Enter your email " className=" w-full h-[40px] text-primary rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2" />
                 </div>
                 
                 <div className="w-full flex flex-row gap-2">
@@ -79,7 +79,7 @@ function handleRegister(){
                         setFirstName(e.target.value);
                         }}
 
-                        type="text" placeholder="Enter your first name" className="w-full h-[40px] text-primary  rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 " />
+                        type="text" placeholder="Enter your first name" className="truncate w-full h-[40px] text-primary  rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 " />
 
 
                     </div>
@@ -93,7 +93,7 @@ function handleRegister(){
                         setLastName(e.target.value);
                         }}
 
-                        type="text" placeholder="Enter your last name" className="w-full h-[40px] text-primary  rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 " />
+                        type="text" placeholder="Enter your last name" className="truncate w-full h-[40px] text-primary  rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 " />
 
 
                     </div>
@@ -130,7 +130,7 @@ function handleRegister(){
 
                 <button onClick={handleRegister} className="w-full h-[40px] bg-accent text-primary font-bold rounded-lg mt-1 hover:bg-accent/80 cursor-pointer">Register</button>
                 
-                <p className="w-full text-right text-sm">Already have an account? <Link to="/login" className="text-accent font-bold hover:underline">Login</Link></p>
+                <p className="w-full text-right text-sm text-white lg:text-secondary">Already have an account? <Link to="/login" className="text-accent font-bold hover:underline">Login</Link></p>
                 
                 <button className="w-full h-[40px] bg-secondary/50 text-primary font-bold rounded-lg border-2 border-secondary flex items-center justify-center gap-3 hover:bg-secondary/70 cursor-pointer">
                     <FcGoogle />Login with Google

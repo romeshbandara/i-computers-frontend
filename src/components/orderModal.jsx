@@ -96,7 +96,7 @@ export default function OrderModal(props) {
                     }
                 }
             >
-                <div className="w-full min-h-full bg-primary flex flex-col rounded-2xl ">
+                <div className="lg:w-full w-[350px] min-h-full bg-primary flex flex-col rounded-2xl ">
 
                     <div className="w-full h-[50px] bg-accent rounded-t-2xl flex justify-center items-center">
                         <h1 className="text-xl text-white font-semibold">Order Summary</h1>
@@ -163,7 +163,7 @@ export default function OrderModal(props) {
 
                     </div>
 
-                    <div className="w-full h-[80px] bg-accent rounded-b-2xl sticky bottom-0 justify-center flex flex-row items-center gap-4 p-4">
+                    <div className="w-full h-[80px] bg-accent rounded-b-2xl sticky bottom-0 justify-center flex flex-row items-center gap-4 p-4 lg:mb-0 mb-20">
                         <button onClick={handleConfirmOrder} className="bg-green-600 px-4 py-2 text-white rounded-md hover:bg-green-800 cursor-pointer transition-colors duration-100">Purchase</button>
                         <button onClick={() => { setModalIsOpen(false) }} className="bg-red-600 px-4 py-2 text-white rounded-md hover:bg-red-800 cursor-pointer transition-colors duration-100">Cancel</button>
                     </div>

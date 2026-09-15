@@ -47,7 +47,7 @@ export default function MyOrdersPage() {
 
 
     return (
-        <div className="w-full max-h-full flex flex-col p-4 items-start overflow-y-scroll">
+        <div className="w-full max-h-full flex flex-col p-4 items-start overflow-scroll">
 
             {
                 isLoading && <LoadingAnimation />
@@ -80,6 +80,8 @@ export default function MyOrdersPage() {
                     Refresh
                 </button>
             </div>
+
+            
 
             <table className="w-full bg-white shadow-md rounded-md text-center mb-[100px]">
 

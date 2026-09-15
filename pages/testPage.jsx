@@ -2,7 +2,11 @@ import LoadingAnimation from "../src/components/loadingAnimation";
 
 export default function TestPage(){
     return(
-        <LoadingAnimation/>
+        <div className="w-screen h-screen">
+            <div className="w-[200px] h-[200px] bg-red-700">
+
+            </div>
+        </div>
         
     )
 }

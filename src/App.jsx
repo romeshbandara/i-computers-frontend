@@ -16,9 +16,11 @@ import api from '../lib/api.js'
 import toast from 'react-hot-toast'
 import { BiLogoQuora } from 'react-icons/bi'
 import LoadingAnimation from './components/loadingAnimation.jsx'
+import { GoogleOAuthProvider } from '@react-oauth/google'
 
 
-function App() {
+ function App() {
+
 
   const [user, setUser] = useState(null);
   const [userLoadingFinished, setUserLoadingFinished] = useState(false);
@@ -46,10 +48,10 @@ function App() {
   }, [userLoadingFinished]);
 
 
-
   return (
     <>
-
+    <GoogleOAuthProvider clientId='784541890940-rad2bsar9n5e9vgpvim2iikteb8sehh4.apps.googleusercontent.com'>
+    {userLoadingFinished &&
       <UserContext value={{
         user: user,
         setUser: setUser,
@@ -70,8 +72,12 @@ function App() {
           </Routes>
         </div>
       </UserContext>
+      }
+      </GoogleOAuthProvider>
     </>
   )
 }
 
 export default App
+
+//784541890940-rad2bsar9n5e9vgpvim2iikteb8sehh4.apps.googleusercontent.com

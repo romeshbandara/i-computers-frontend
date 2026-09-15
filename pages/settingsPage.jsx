@@ -4,7 +4,7 @@ import toast from "react-hot-toast"
 import api from "../lib/api"
 import uploadMedia from "../lib/uploadMedia"
 import LoadingAnimation from "../src/components/loadingAnimation"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 
 export default function SettingsPage() {
 
@@ -102,7 +102,52 @@ export default function SettingsPage() {
         <>
             {isLoading && <LoadingAnimation />}
 
-            <div className="w-full min-h-full pt-10 bg-primary flex flex-wrap justify-evenly p-4">
+            <div className="w-full min-h-full pt-10 bg-primary flex flex-wrap justify-evenly p-4 gap-4 pb-30 lg:pb-0">
+                {/* only visible to mobile */}
+                <div className="w-[450px] lg:hidden flex gap-4">
+                    <Link to="/my-orders" className="px-4 py-2 bg-accent rounded-full text-white hover:bg-black">My Orders</Link>
+                    <button onClick={() => {
+                        localStorage.removeItem("token")
+                        userInfo.setUser(null)
+                        navigate("/login")
+                    }} className="px-4 py-2 bg-accent rounded-full text-white hover:bg-black">Logout</button>
+                </div>
+
+                <div className="w-[450px] lg:h-[450px] rounded-md bg-white shadow-xl flex flex-col items-center gap-y-4 p-4 ">
+
+                    <div className="w-full h-[200px] flex flex-col justify-center items-center gap-4 pb-4">
+                        <img src={userInfo.user.image} alt={userInfo.user.firstName} className="w-30 h-30 rounded-full object-cover" />
+                        <h1 className="text-3xl text-secondary">Welcome {userInfo.user.firstName}!</h1>
+                    </div>
+
+                    <table className="w-full table-fixed">
+                        <tbody>
+                            <tr className="text-lg h-[40px]">
+                                <td className="w-32 pr-4 whitespace-nowrap">Email :-</td>
+                                <td className="break-all">{userInfo.user.email}</td>
+                            </tr>
+                            <tr className="text-lg h-[40px]">
+                                <td className="w-32 pr-4 whitespace-nowrap">First Name :-</td>
+                                <td className="truncate">{userInfo.user.firstName}</td>
+                            </tr>
+                            <tr className="text-lg h-[40px]">
+                                <td className="w-32 pr-4 whitespace-nowrap">Last Name :-</td>
+                                <td className="truncate">{userInfo.user.lastName}</td>
+                            </tr>
+                            <tr className="text-lg h-[40px]">
+                                <td className="w-32 pr-4 whitespace-nowrap">Role :-</td>
+                                <td>{userInfo.user.isAdmin ? "Admin" : "User"}</td>
+                            </tr>
+                            <tr className="text-lg h-[40px]">
+                                <td className="w-32 pr-4 whitespace-nowrap">Status :-</td>
+                                <td className={userInfo.user.isBlocked ? "text-red-600" : "text-green-600"}>{userInfo.user.isBlocked ? "Blocked" : "Active"}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                </div>
+
+
 
                 <div className="w-[450px] h-[450px] rounded-md bg-white shadow-xl flex flex-col relative">
                     <h1 className="text-xl font-semibold p-4">Update Profile</h1>
@@ -119,44 +164,12 @@ export default function SettingsPage() {
                         <input type="file" onChange={(e) => { setImage(e.target.files[0]) }} className="w-full h-[50px] border-2 border-accent rounded-lg p-2 outline-none" />
                     </div>
 
-                    <div className="w-full bg-white  flex flex-col rounded-md absolute bottom-2">
+                    <div className="w-full bg-white  flex flex-col rounded-md absolute  bottom-5">
                         <button onClick={handleProfileUpdate} className="px-4 py-2 mx-4 bg-accent text-white shadow-md rounded-full cursor-pointer hover:bg-black transition-colors duration-100 ">Update Profile</button>
                     </div>
                 </div>
 
-                <div className="w-[450px] h-[450px] rounded-md bg-white shadow-xl flex flex-col items-center gap-y-4 p-4">
 
-                    <div className="w-full h-[200px] flex flex-col justify-center items-center gap-4 pb-4">
-                        <img src={userInfo.user.image} alt={userInfo.user.firstName} className="w-30 h-30 rounded-full object-cover"/>
-                        <h1 className="text-3xl text-secondary">Welcome {userInfo.user.firstName}!</h1>
-                    </div>
-
-                    <table>
-                        <tbody>
-                            <tr className="text-lg h-[40px]">
-                                <td className="pr-4">Email :-</td>
-                                <td>{userInfo.user.email}</td>
-                            </tr>
-                            <tr className="text-lg h-[40px]">
-                                <td className="pr-4">First Name :-</td>
-                                <td>{userInfo.user.firstName}</td>
-                            </tr>
-                            <tr className="text-lg h-[40px]">
-                                <td className="pr-4">Last Name :-</td>
-                                <td>{userInfo.user.lastName}</td>
-                            </tr>
-                            <tr className="text-lg h-[40px]">
-                                <td className="pr-4">Role :-</td>
-                                <td> {userInfo.user.isAdmin ? "Admin":"User"}</td>
-                            </tr>
-                            <tr className="text-lg h-[40px]">
-                                <td className="pr-4">Status :-</td>
-                                <td> {userInfo.user.isBlocked ? "Blocked":"Active"}</td>
-                            </tr>
-                        </tbody>
-                    </table>
-
-                </div>
 
                 <div className="w-[450px] h-[450px] rounded-md bg-white shadow-xl relative flex flex-col items-">
                     <h1 className="text-xl font-semibold p-4">Change Password</h1>
@@ -169,7 +182,7 @@ export default function SettingsPage() {
                         <input type="password" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value) }} className="w-full h-[50px] border-2 border-accent rounded-lg p-2 outline-none" />
                     </div>
 
-                    <div className="w-full bg-white  flex flex-col rounded-md absolute bottom-2">
+                    <div className="w-full bg-white  flex flex-col rounded-md absolute bottom-5">
                         <button onClick={handlePasswordUpdate} className="px-4 py-2 mx-4 bg-accent text-white shadow-md rounded-full cursor-pointer hover:bg-black transition-colors duration-100 ">Update Password</button>
                     </div>
                 </div>

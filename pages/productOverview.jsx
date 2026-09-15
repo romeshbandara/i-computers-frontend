@@ -41,17 +41,17 @@ export default function ProductOverview(){
     
 
     return(
-        <div className="w-full h-[calc(100vh-100px)] overflow-y-scroll ">
+        <div className="w-full h-[calc(100vh-100px)] overflow-y-scroll lg:pb-0 pb-30">
             {loading && <LoadingAnimation/>}
             {
                 product!=null&&
-                <div className="w-full h-full min-h-full flex">
-                    <div className="w-1/2 h-full flex items-center justify-center mt-4">
+                <div className="w-full min-h-full  flex lg:flex-row flex-col">
+                    <div className="lg:w-1/2 w-full h-full flex items-center justify-center mt-4">
 
                         <ImageSlideShow images={product.images}/>
 
                     </div>
-                    <div className="w-1/2 h-full p-8 flex flex-col">
+                    <div className="lg:w-1/2 w-full h-full p-8 flex flex-col">
                         <h1 className="text-3xl font-semibold">{product.name} {
                             product.altNames.map((name,index)=>{
                                 return(
