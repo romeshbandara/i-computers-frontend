@@ -17,6 +17,7 @@ import toast from 'react-hot-toast'
 import { BiLogoQuora } from 'react-icons/bi'
 import LoadingAnimation from './components/loadingAnimation.jsx'
 import { GoogleOAuthProvider } from '@react-oauth/google'
+import ResetPasswordPage from '../pages/resetPassword.jsx'
 
 
  function App() {
@@ -39,7 +40,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
 
       })
       .catch(() => {
-        toast.error("Please login again");
+        toast("Please login",{icon:"🚀"});
         localStorage.removeItem("token");
         setUser(null);
         setUserLoadingFinished(true);
@@ -67,6 +68,7 @@ import { GoogleOAuthProvider } from '@react-oauth/google'
             <Route path="/*" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
             <Route path="/register" element={<RegisterPage />} />
+            <Route path="/reset-password" element={<ResetPasswordPage/>} />
             <Route path="/admin/*" element={<AdminPage />} />
             <Route path="/test" element={<TestPage />} />
           </Routes>

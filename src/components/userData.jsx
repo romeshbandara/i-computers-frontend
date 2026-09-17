@@ -44,10 +44,7 @@ export default function UserData() {
                 : (
                     <>
                         <div className="h-full lg:w-auto lg:h-auto w-[80px]  hidden text-white border-2 border-white lg:rounded-full lg:flex lg:flex-row flex-col justify-center items-center  lg:gap-2 overflow-hidden">
-                            <img src={userData.user?.image} referrerPolicy="no-referrer" onError={(e) => {
-                                e.target.onerror = null;
-                                e.target.src = "https://placehold.co/40?text=U"; // Fallback placeholder
-                            }} alt="Avatar" className="lg:w-10 lg:h-10 w-5 h-5 rounded-full" />
+                            <img src={userData.user?.image} referrerPolicy="no-referrer"  alt="Avatar" className="lg:w-10 lg:h-10 w-5 h-5 rounded-full" />
                             <select value={selection} onChange={(e) => {
                                 setSelection(e.target.value)
                                 if (e.target.value === "settings") {

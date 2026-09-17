@@ -1,5 +1,5 @@
-import { Route, Routes, Link } from "react-router-dom";
-import { useEffect } from "react";
+import { Route, Routes, Link, useNavigate, replace } from "react-router-dom";
+import { useContext } from "react";
 import toast from "react-hot-toast";
 import { CiShoppingCart } from "react-icons/ci";
 import { BsBox } from "react-icons/bs";
@@ -10,11 +10,18 @@ import AddProductForm from "./admin/adminAddProductForm";
 import EditProductForm from "./admin/adminEditProductForm";
 import AdminOrdersPage from "./admin/adminOrders";
 import AdminUsersPage from "./admin/adminUsersPage";
+import UserContext from "../src/context/userContext";
 
 
 export default function AdminPage(){
 
+    const userInfo = useContext(UserContext)
+    const navigate = useNavigate()
     // useEffect(() => {toast.success("Welcome to Admin Dashboard")}, [])
+
+    if (userInfo.user == null || !userInfo.user.isAdmin ) {
+        navigate("/login", {replace : true})
+    }
 
     return(
         
