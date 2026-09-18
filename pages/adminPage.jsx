@@ -17,34 +17,48 @@ export default function AdminPage(){
 
     const userInfo = useContext(UserContext)
     const navigate = useNavigate()
-    // useEffect(() => {toast.success("Welcome to Admin Dashboard")}, [])
 
     if (userInfo.user == null || !userInfo.user.isAdmin ) {
         navigate("/login", {replace : true})
     }
 
     return(
-        
-        <div className="w-full h-full flex">
+        <div className="w-full h-full flex bg-[#020817]">
 
-            <div className="w-[360px] h-full shadow-2xl text-secondary flex flex-col ">
+            {/* Sidebar */}
+            <div className="w-[240px] shrink-0 h-full bg-[#020817] border-r border-white/10 flex flex-col shadow-2xl">
 
-                <div className="w-[360px] h-[100px] flex justify-center items-center ">
-
-                    <img src="/logo.webp" alt="logo" className="w-[200px] h-[200px] object-cover"></img>
-
+                <div className="w-full h-[90px] flex justify-center items-center border-b border-white/10 px-4">
+                   <a href="/"> <img src="/logo.webp" alt="logo" className="h-[150px] w-auto object-contain" /></a>
                 </div>
 
-               <Link to="/admin" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 transition-all duration-200 hover:bg-accent hover:text-white"><IoCartOutline /> Orders</Link>
-               <Link to="/admin/products" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 transition-all duration-200 hover:bg-accent hover:text-white"><BsBox /> Products</Link>
-               <Link to="/admin/users" className="w-full flex items-center p-2 gap-2 text-3xl mb-2 transition-all duration-200 hover:bg-accent hover:text-white"><LuUsersRound/>Users</Link>
-               
-
+                <nav className="flex flex-col p-3 gap-1 mt-2">
+                    <Link
+                        to="/admin"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-150"
+                    >
+                        <IoCartOutline className="text-xl shrink-0" />
+                        Orders
+                    </Link>
+                    <Link
+                        to="/admin/products"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-150"
+                    >
+                        <BsBox className="text-xl shrink-0" />
+                        Products
+                    </Link>
+                    <Link
+                        to="/admin/users"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-150"
+                    >
+                        <LuUsersRound className="text-xl shrink-0" />
+                        Users
+                    </Link>
+                </nav>
             </div>
-            <div className="w-[calc(100%-360px)] h-full">
 
-                
-
+            {/* Content Area */}
+            <div className="flex-1 h-full overflow-y-auto bg-[#020817]">
                 <Routes>
                     <Route path="/" element={<AdminOrdersPage/>} />
                     <Route path="/products" element={<AdminProudctsPage/>} />
@@ -52,12 +66,9 @@ export default function AdminPage(){
                     <Route path="/add-product" element={<AddProductForm/>}/>
                     <Route path="/edit-product/" element={<EditProductForm/>}/>
                 </Routes>
-
             </div>
-            
-            
+
         </div>
-        
     )
 }
 
