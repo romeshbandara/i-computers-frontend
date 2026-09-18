@@ -70,7 +70,7 @@ export default function LandingPage() {
                 {/* ================= HERO CONTENT ================= */}
                 <div
                     className="relative z-10 w-full max-w-[1500px]
-                    mx-auto px-6 lg:px-10 pt-[100px]"
+                    mx-auto px-6 lg:px-10 lg:pt-[100px] pt-[50px]"
                 >
 
                     <div className="grid lg:grid-cols-2 gap-10 items-center">
@@ -381,24 +381,28 @@ export default function LandingPage() {
                             title="Laptops"
                             icon="💻"
                             gradient="from-cyan-500/20 to-blue-600/20"
+                            value="Laptop"
                         />
 
                         <Category
                             title="Desktops"
                             icon="🖥️"
                             gradient="from-blue-500/20 to-purple-600/20"
+                            value="Desktop"
                         />
 
                         <Category
                             title="Gaming Gear"
                             icon="🎮"
                             gradient="from-purple-500/20 to-pink-600/20"
+                            value="Gaming"
                         />
 
                         <Category
                             title="Accessories"
                             icon="⌨️"
                             gradient="from-pink-500/20 to-blue-600/20"
+                            value="Mouse"
                         />
 
                     </div>
@@ -414,7 +418,7 @@ export default function LandingPage() {
 
 /* ================= FEATURE ================= */
 
-function Feature({ icon, title, text }) {
+function Feature({ icon, title, text, }) {
     return (
         <div
             className="flex items-center gap-4
@@ -449,10 +453,10 @@ function Feature({ icon, title, text }) {
 
 /* ================= CATEGORY ================= */
 
-function Category({ title, icon, gradient }) {
+function Category({ title, icon, gradient, value }) {
     return (
         <Link
-            to="/products"
+            to="/products" state={value}
             className={`group relative overflow-hidden
             h-[180px] rounded-2xl
             border border-white/10

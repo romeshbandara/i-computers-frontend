@@ -30,27 +30,29 @@ export default function UserData() {
         <>
             {userData.user == null ? (
                 <>
-                    <div className=" text-white p-1 lg:flex hidden gap-4">
-                        <Link to="/login" className="border-2 border-white rounded-full px-4 py-2 flex justify-center items-center hover:bg-white hover:text-accent transition-colors duration-100">Login </Link>
-
-                        <Link to="/register" className="border-2 border-white rounded-full px-4 py-2 flex justify-center items-center hover:bg-white hover:text-accent transition-colors duration-100"> Register</Link>
+                    <div className="text-white lg:flex hidden items-center gap-3">
+                        <Link to="/login" className="border border-white/20 bg-white/5 backdrop-blur-md rounded-full px-4 py-1.5 text-sm text-gray-200 hover:text-white hover:border-cyan-400/60 hover:bg-white/10 transition-all">
+                            Login
+                        </Link>
+                        <Link to="/register" className="border border-cyan-500/40 bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-400 rounded-full px-4 py-1.5 text-sm font-semibold hover:border-cyan-400 hover:shadow-[0_0_15px_rgba(34,211,238,0.3)] transition-all">
+                            Register
+                        </Link>
                     </div>
-                    <Link to="/login" className="lg:hidden flex flex-col aspect-square items-center justify-center">
-                        <CiUser />
-                        <span className="text-sm">Login</span>
+                    <Link to="/login" className="lg:hidden flex flex-col aspect-square items-center justify-center text-gray-400 hover:text-cyan-400 transition-colors">
+                        <CiUser className="text-2xl" />
+                        <span className="text-xs mt-1">Login</span>
                     </Link>
                 </>
-            )
-                : (
-                    <>
-                        <div className="h-full lg:w-auto lg:h-auto w-[80px]  hidden text-white border-2 border-white lg:rounded-full lg:flex lg:flex-row flex-col justify-center items-center  lg:gap-2 overflow-hidden">
-                            <img src={userData.user?.image} referrerPolicy="no-referrer"  alt="Avatar" className="lg:w-10 lg:h-10 w-5 h-5 rounded-full" />
-                            <select value={selection} onChange={(e) => {
+            ) : (
+                <>
+                    <div className="h-auto hidden text-white border border-white/15 bg-white/5 backdrop-blur-md rounded-full lg:flex items-center gap-2 pl-1 pr-2 py-1 hover:border-cyan-400/50 transition-all">
+                        <img src={userData.user?.image || "/logo.webp"} referrerPolicy="no-referrer" alt="Avatar" className="w-8 h-8 rounded-full object-cover border border-cyan-400/40" />
+                        <select
+                            value={selection}
+                            onChange={(e) => {
                                 setSelection(e.target.value)
                                 if (e.target.value === "settings") {
-
                                     navigate("/settings")
-
                                 } else if (e.target.value === "my-orders") {
                                     navigate("/my-orders")
                                 } else if (e.target.value === "logout") {
@@ -58,19 +60,21 @@ export default function UserData() {
                                     userData.setUser(null)
                                     navigate("/login")
                                 }
-                            }} className=" lg:bg-accent text-center  lg:text-white text-accent lg:p-1 outline-none cursor-pointer flex  ">
-                                <option value="name" disabled={true}>{userData.user.firstName}</option>
-                                <option value="settings">Settings</option>
-                                <option value="my-orders">My Orders</option>
-                                <option value="logout">Logout</option>
-                            </select>
-                        </div>
-                        <Link to="/settings" className="h-full w- lg:hidden flex flex-col justify-center items-center aspect-square ">
-                            <img src={userData.user.image} alt={userData.user.firstName} className="w-5 h-5 rounded-full object-cover" />
-                            <h1 className="text-sm">me</h1>
-                        </Link>
-                    </>
-                )}
+                            }}
+                            className="bg-transparent text-white text-sm font-medium outline-none cursor-pointer pr-1 [&>option]:bg-[#020817] [&>option]:text-white"
+                        >
+                            <option value="name" disabled={true}>{userData.user.firstName}</option>
+                            <option value="settings">Settings</option>
+                            <option value="my-orders">My Orders</option>
+                            <option value="logout">Logout</option>
+                        </select>
+                    </div>
+                    <Link to="/settings" className="lg:hidden flex flex-col justify-center items-center aspect-square text-gray-400 hover:text-cyan-400 transition-colors">
+                        <img src={userData.user.image || "/logo.webp"} alt={userData.user.firstName} className="w-6 h-6 rounded-full object-cover border border-cyan-400/50" />
+                        <span className="text-xs mt-1">Me</span>
+                    </Link>
+                </>
+            )}
         </>
     )
 }
