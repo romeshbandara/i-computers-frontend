@@ -49,40 +49,99 @@ export default function ResetPasswordPage() {
     }
 
     return (
-        <div className="w-full h-full flex justify-center items-center bg-primary">
-            {!isOtpSent ? <div className="w-[400px] h-[400px] bg-white flex flex-col justify-center items-center gap-4 rounded-xl">
-                <h1 className="text-2xl font-bold">Reset Password</h1>
-                <div className="w-[80%] flex flex-col gap-2">
-                    <label htmlFor="email" className="font-semibold">Email</label>
-                    <input type="email" placeholder="Enter your email address" value={email} onChange={(e) => { setEmail(e.target.value) }} className="w-full h-10 border-2 border-accent rounded-md p-2 " />
+        <main className="w-full min-h-screen flex justify-center items-center bg-[#020817] text-white relative overflow-hidden p-4">
+            {/* Ambient Background Glows */}
+            <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-blue-600/15 blur-[160px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[10%] right-[10%] w-[450px] h-[450px] bg-purple-600/15 blur-[150px] rounded-full pointer-events-none" />
+
+            {!isOtpSent ? (
+                <div className="w-full max-w-[400px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col items-center gap-4 relative z-10">
+                    <Link to="/">
+                        <img src="/logo.webp" alt="Isuri Computers" className="h-12 object-contain mb-1 hover:scale-105 transition-transform" />
+                    </Link>
+                    <h1 className="text-2xl font-black text-white">
+                        Reset <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Password</span>
+                    </h1>
+                    <p className="text-xs text-gray-400 text-center -mt-2 mb-2">
+                        Enter your account email to receive a recovery code.
+                    </p>
+
+                    <div className="w-full flex flex-col gap-1.5">
+                        <label htmlFor="email" className="text-xs font-medium text-gray-300">Email Address</label>
+                        <input
+                            type="email"
+                            placeholder="you@domain.com"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            className="w-full h-11 bg-white/5 border border-white/10 rounded-xl px-4 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 outline-none text-sm transition-all"
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleOTPRequest}
+                        className="w-full h-11 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 font-bold text-white rounded-xl mt-3 shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-sm"
+                    >
+                        Send Reset Code
+                    </button>
+
+                    <Link to="/login" className="text-xs text-cyan-400 font-semibold hover:underline mt-2">
+                        Back to Login
+                    </Link>
                 </div>
-                <button onClick={handleOTPRequest} className="w-[80%] h-10 bg-accent text-white rounded-md">Reset Password</button>
-                <Link to="/login" className="text-accent">Back to Login</Link>
-            </div>
+            ) : (
+                <div className="w-full max-w-[400px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col items-center gap-4 relative z-10">
+                    <h1 className="text-2xl font-black text-white">
+                        Enter <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Code</span>
+                    </h1>
+                    <span className="text-xs text-cyan-400 font-mono -mt-2">{email}</span>
 
-                :
+                    <div className="w-full flex flex-col gap-1.5">
+                        <label htmlFor="otp" className="text-xs font-medium text-gray-300">OTP Code</label>
+                        <input
+                            type="text"
+                            placeholder="Enter 6-digit code"
+                            value={otp}
+                            onChange={(e) => setOtp(e.target.value)}
+                            className="w-full h-11 bg-white/5 border border-white/10 rounded-xl px-4 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 outline-none text-sm font-mono tracking-widest transition-all"
+                        />
+                    </div>
 
-                <div className="w-[400px]  bg-white flex flex-col justify-center items-center gap-4 py-6 rounded-xl">
-                    <h1 className="text-2xl font-bold">Reset Password</h1>
-                    <h2 className="text-sm text-gray-500">{email}</h2>
-                    <div className="w-[80%] flex flex-col gap-2">
-                        <label htmlFor="otp" className="font-semibold">OTP</label>
-                        <input type="text" placeholder="Enter your OTP" value={otp} onChange={(e) => { setOtp(e.target.value) }} className="w-full h-10 border-2 border-accent rounded-md p-2 " />
+                    <div className="w-full flex flex-col gap-1.5">
+                        <label className="text-xs font-medium text-gray-300">New Password</label>
+                        <input
+                            type="password"
+                            placeholder="Enter your new password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            className="w-full h-11 bg-white/5 border border-white/10 rounded-xl px-4 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 outline-none text-sm transition-all"
+                        />
                     </div>
-                    <div className="w-[80%] flex flex-col gap-2">
-                        <label htmlFor="otp" className="font-semibold">New Password</label>
-                        <input type="password" placeholder="Enter your new password" value={password} onChange={(e) => { setPassword(e.target.value) }} className="w-full h-10 border-2 border-accent rounded-md p-2 " />
-                    </div>
-                    <div className="w-[80%] flex flex-col gap-2">
-                        <label htmlFor="otp" className="font-semibold">Confirm Password</label>
-                        <input type="password" placeholder="Enter your new password" value={confirmPassword} onChange={(e) => { setConfirmPassword(e.target.value) }} className="w-full h-10 border-2 border-accent rounded-md p-2 " />
-                    </div>
-                    <button onClick={handlePasswordReset} className="w-[80%] h-10 bg-accent text-white rounded-md">Reset Password</button>
-                    <Link to="/login" className="text-accent">Back to Login</Link>
-                </div>}
 
+                    <div className="w-full flex flex-col gap-1.5">
+                        <label className="text-xs font-medium text-gray-300">Confirm Password</label>
+                        <input
+                            type="password"
+                            placeholder="Confirm your new password"
+                            value={confirmPassword}
+                            onChange={(e) => setConfirmPassword(e.target.value)}
+                            className="w-full h-11 bg-white/5 border border-white/10 rounded-xl px-4 text-white placeholder-gray-500 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 outline-none text-sm transition-all"
+                        />
+                    </div>
+
+                    <button
+                        onClick={handlePasswordReset}
+                        className="w-full h-11 bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 font-bold text-white rounded-xl mt-3 shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-sm"
+                    >
+                        Confirm New Password
+                    </button>
+
+                    <Link to="/login" className="text-xs text-cyan-400 font-semibold hover:underline mt-2">
+                        Back to Login
+                    </Link>
+                </div>
+            )}
 
             {isLoading && <LoadingAnimation />}
-        </div>
+        </main>
     )
 }
