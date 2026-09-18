@@ -21,8 +21,8 @@ export default function ContactPage() {
         }
         setSending(true)
         setTimeout(() => {
-            handleMessage
-            toast.success("Thank you! Your message has been sent successfully.")
+            
+            
             setFormData({ name: "", email: userInfo.user.email, subject: "", message: "" })
             setSending(false)
         }, 600)
@@ -36,7 +36,8 @@ export default function ContactPage() {
             subject:formData.subject,
             message:formData.message
         }
-        await api.post("/contact/message",messageData).catch((err)=>{console.log(err); toast.error("Something went wrong!")})
+        await api.post("/contact/message",messageData).then((res)=>{toast.success(res.data)}).catch((err)=>{console.log(err); toast.error("Something went wrong!")})
+        
     }
 
     return (
@@ -166,7 +167,7 @@ export default function ContactPage() {
 
                             <button
                                 type="submit"
-                               
+                                onClick={handleMessage}
                                 disabled={sending}
                                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                             >
