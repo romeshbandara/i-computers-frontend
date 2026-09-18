@@ -85,18 +85,28 @@ export default function OrderModal(props) {
                 onRequestClose={() => (setModalIsOpen(false))}
                 style={
                     {
+                        overlay: {
+                            backgroundColor: 'rgba(0, 0, 0, 0.75)',
+                            zIndex: 1000,
+                        },
                         content: {
-                            width: '500px',
-                            margin: 'auto',
+                            width: 'min(500px, 90vw)',
+                            maxHeight: '90vh',
+                            top: '50%',
+                            left: '50%',
+                            right: 'auto',
+                            bottom: 'auto',
+                            transform: 'translate(-50%, -50%)',
+                            margin: '0',
                             padding: '0px',
                             backgroundColor: 'transparent',
                             border: 'none',
-
+                            overflow: 'hidden',
                         }
                     }
                 }
             >
-                <div className="lg:w-full w-[350px] min-h-full bg-primary flex flex-col rounded-2xl ">
+                <div className="w-full max-h-[90vh] overflow-y-auto bg-primary flex flex-col rounded-2xl">
 
                     <div className="w-full h-[50px] bg-accent rounded-t-2xl flex justify-center items-center">
                         <h1 className="text-xl text-white font-semibold">Order Summary</h1>
@@ -113,13 +123,13 @@ export default function OrderModal(props) {
                             <span className="text-lg ">{props.cart.length}</span>
                         </div>
                     </div>
-                    <div className="w-full gap-[10%] p-4 flex flex-wrap">
-                        <div className="w-[45%]  flex flex-col">
+                    <div className="w-full gap-x-[10%] gap-y-0 p-4 flex flex-wrap">
+                        <div className="w-full sm:w-[45%] flex flex-col">
                             <label className="text-secondary text-md">First Name</label>
                             <input value={firstName} onChange={(e) => { setFirstName(e.target.value) }} type="text" placeholder="Jhon" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
-                        <div className="w-[45%]  flex flex-col">
+                        <div className="w-full sm:w-[45%] flex flex-col mt-3 sm:mt-0">
                             <label className="text-secondary text-md">Last Name</label>
                             <input value={lastName} onChange={(e) => { setLastName(e.target.value) }} type="text" placeholder="Doe" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
@@ -134,36 +144,34 @@ export default function OrderModal(props) {
                             <input value={addressLine2} onChange={(e) => { setAddressLine2(e.target.value) }} type="text" placeholder="TB Jaya Mawatha, Colombo 07" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
-                        <div className="w-[45%] mt-3  flex flex-col">
+                        <div className="w-full sm:w-[45%] mt-3 flex flex-col">
                             <label className="text-secondary text-md">City</label>
                             <input value={city} onChange={(e) => { setCity(e.target.value) }} type="text" placeholder="Colombo" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
-                        <div className="w-[45%] mt-3  flex flex-col">
+                        <div className="w-full sm:w-[45%] mt-3 flex flex-col">
                             <label className="text-secondary text-md">Postal Code</label>
                             <input value={postalCode} onChange={(e) => { setPostalCode(e.target.value) }} type="text" placeholder="50300" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
-                        <div className="w-[45%] mt-3  flex flex-col">
+                        <div className="w-full sm:w-[45%] mt-3 flex flex-col">
                             <label className="text-secondary text-md">Phone</label>
                             <input value={phoneNumber} onChange={(e) => { setPhoneNumber(e.target.value) }} type="text" placeholder="+94 71 123 4562" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
-                        <div className="w-[45%] mt-3  flex flex-col">
+                        <div className="w-full sm:w-[45%] mt-3 flex flex-col">
                             <label className="text-secondary text-md">Secondary Phone</label>
                             <input value={secondaryPhoneNumber} onChange={(e) => { setSecondaryPhoneNumber(e.target.value) }} type="text" placeholder="+94 71 123 4562" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
-
 
                         <div className="w-full mt-3 flex flex-col">
                             <label className="text-secondary text-md">Special Note</label>
                             <textarea value={specialNote} onChange={(e) => { setSpecialNote(e.target.value) }} type="text" placeholder="Write your Special note" className="w-full min-h-[130px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
-
                     </div>
 
-                    <div className="w-full h-[80px] bg-accent rounded-b-2xl sticky bottom-0 justify-center flex flex-row items-center gap-4 p-4 lg:mb-0 mb-20">
+                    <div className="w-full h-[80px] bg-accent rounded-b-2xl sticky bottom-0 justify-center flex flex-row items-center gap-4 p-4">
                         <button onClick={handleConfirmOrder} className="bg-green-600 px-4 py-2 text-white rounded-md hover:bg-green-800 cursor-pointer transition-colors duration-100">Purchase</button>
                         <button onClick={() => { setModalIsOpen(false) }} className="bg-red-600 px-4 py-2 text-white rounded-md hover:bg-red-800 cursor-pointer transition-colors duration-100">Cancel</button>
                     </div>

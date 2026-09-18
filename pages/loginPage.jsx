@@ -86,50 +86,86 @@ export default function LoginPage() {
     }
 
     return (
-        <div className="w-full h-full bg-[url(/bg.jpg)] bg-cover flex justify-center items-center">
+        <main className="w-full min-h-screen bg-[#020817] text-white flex justify-center items-center relative overflow-hidden p-4">
+            {/* Ambient Glows */}
+            <div className="absolute top-[10%] left-[10%] w-[500px] h-[500px] bg-blue-600/15 blur-[160px] rounded-full pointer-events-none" />
+            <div className="absolute bottom-[10%] right-[10%] w-[450px] h-[450px] bg-purple-600/15 blur-[150px] rounded-full pointer-events-none" />
 
             {loading && <LoadingAnimation />}
 
-            <div className="w-[350px] lg:w-[450px] h-[580px] backdrop-blur-md shadow-2xl rounded-lg p-4 flex items-center flex-col">
+            <div className="w-full max-w-[420px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col items-center relative z-10">
+                <Link to="/">
+                    <img src="/logo.webp" alt="Isuri Computers" className="h-12 object-contain mb-3 hover:scale-105 transition-transform" />
+                </Link>
+                <h1 className="text-2xl font-black text-white mb-6">
+                    Welcome <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Back</span>
+                </h1>
 
-                <img src="logo.webp" className="w-[150px] h-[90px] object-cover bg-accent/40 rounded-lg mb-4" />
-                <h1 className="text-3xl font-bold text-white lg:text-secondary">Login</h1>
+                <div className="w-full space-y-4">
+                    <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1.5">Email Address</label>
+                        <input
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                            type="email"
+                            placeholder="Enter your email"
+                            className="w-full h-[44px] text-white rounded-xl bg-white/5 border border-white/10 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 outline-none px-4 text-sm transition-all placeholder-gray-500"
+                        />
+                    </div>
 
-                <label className="w-full text-lg text-white  mt-2 mb-2 ">Email</label>
-                <input
-                    value={email}
-                    onChange={(e) => {
-                        setEmail(e.target.value);
-                    }}
+                    <div>
+                        <label className="block text-xs font-medium text-gray-300 mb-1.5">Password</label>
+                        <input
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            onKeyDown={(e) => {
+                                if (e.key === "Enter") {
+                                    handleLogin();
+                                }
+                            }}
+                            type="password"
+                            placeholder="Enter your password"
+                            className="w-full h-[44px] text-white rounded-xl bg-white/5 border border-white/10 focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 outline-none px-4 text-sm transition-all placeholder-gray-500"
+                        />
+                    </div>
+                </div>
 
-                    type="email" placeholder="Enter your email" className="w-full h-[40px] text-primary mb-2 rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 mb-4" />
+                <div className="w-full text-right mt-2">
+                    <Link to="/reset-password" className="text-xs text-cyan-400 hover:text-cyan-300 transition-colors">
+                        Forgot Password?
+                    </Link>
+                </div>
 
-                <label className="w-full text-lg text-white  mt-2 mb-2 ">Password</label>
-                <input
-                    value={password}
-                    onChange={(e) => {
-                        setPassword(e.target.value);
-                    }}
+                <button
+                    onClick={handleLogin}
+                    type="submit"
+                    className="w-full h-[44px] bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white font-bold rounded-xl mt-5 shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer text-sm"
+                >
+                    Sign In
+                </button>
 
-                    onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            handleLogin();
-                        }
-                    }}
+                <p className="w-full text-center text-xs text-gray-400 mt-4">
+                    Don't have an account?{" "}
+                    <Link to="/register" className="text-cyan-400 font-semibold hover:underline">
+                        Create one here
+                    </Link>
+                </p>
 
-                    type="password" placeholder="Enter your password" className="w-full h-[40px] text-primary mb-2 rounded-lg bg-secondary/20 border-2 border-accent/30 focus:border-accent outline-none p-2 " />
-                <p className="w-full text-right text-white lg:text-secondary">Forget Password? reset <Link to="/reset-password" className="text-accent font-bold hover:underline">here</Link></p>
+                <div className="w-full flex items-center gap-3 my-4">
+                    <div className="flex-1 h-[1px] bg-white/10" />
+                    <span className="text-[11px] text-gray-500 uppercase tracking-wider">or</span>
+                    <div className="flex-1 h-[1px] bg-white/10" />
+                </div>
 
-                <button onClick={handleLogin} type="submit" className="w-full h-[40px] bg-accent text-primary font-bold rounded-lg  mt-5 mb-2 hover:bg-accent/80 cursor-pointer">Login</button>
-                <p className="w-full text-right text-white lg:text-secondary">Don't have an account? <Link to="/register" className="text-accent font-bold hover:underline">Register</Link></p>
-
-                <button onClick={googleLogin} className="w-full h-[40px] bg-secondary/50 text-primary font-bold rounded-lg border-3 border-secondary mt-5 flex items-center justify-center gap-3 hover:bg-secondary/70 cursor-pointer"><FcGoogle />Login with Google</button>
-
+                <button
+                    onClick={googleLogin}
+                    className="w-full h-[44px] bg-white/5 text-gray-200 border border-white/10 font-medium rounded-xl flex items-center justify-center gap-3 hover:bg-white/10 hover:border-white/20 transition-all cursor-pointer text-xs"
+                >
+                    <FcGoogle className="text-base" />
+                    <span>Continue with Google</span>
+                </button>
             </div>
-
-
-
-        </div>
+        </main>
     )
 
 

@@ -60,7 +60,7 @@ import ResetPasswordPage from '../pages/resetPassword.jsx'
         setUserLoadingFinished: setUserLoadingFinished
 
       }}>
-        <div className='w-full h-screen bg-primary'>
+        <div className='w-full min-h-screen bg-[#020817] text-white'>
 
           <Toaster position="top-right" />
 
