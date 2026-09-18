@@ -11,25 +11,27 @@ import EditProductForm from "./admin/adminEditProductForm";
 import AdminOrdersPage from "./admin/adminOrders";
 import AdminUsersPage from "./admin/adminUsersPage";
 import UserContext from "../src/context/userContext";
+import AdminContactPage from "./admin/adminContactPage";
+import { FaRegMessage } from "react-icons/fa6";
 
 
-export default function AdminPage(){
+export default function AdminPage() {
 
     const userInfo = useContext(UserContext)
     const navigate = useNavigate()
 
-    if (userInfo.user == null || !userInfo.user.isAdmin ) {
-        navigate("/login", {replace : true})
+    if (userInfo.user == null || !userInfo.user.isAdmin) {
+        navigate("/login", { replace: true })
     }
 
-    return(
+    return (
         <div className="w-full h-full flex bg-[#020817]">
 
             {/* Sidebar */}
             <div className="w-[240px] shrink-0 h-full bg-[#020817] border-r border-white/10 flex flex-col shadow-2xl">
 
                 <div className="w-full h-[90px] flex justify-center items-center border-b border-white/10 px-4">
-                   <a href="/"> <img src="/logo.webp" alt="logo" className="h-[150px] w-auto object-contain" /></a>
+                    <a href="/"> <img src="/logo.webp" alt="logo" className="h-[150px] w-auto object-contain" /></a>
                 </div>
 
                 <nav className="flex flex-col p-3 gap-1 mt-2">
@@ -54,17 +56,25 @@ export default function AdminPage(){
                         <LuUsersRound className="text-xl shrink-0" />
                         Users
                     </Link>
+                    <Link
+                        to="/admin/contact"
+                        className="w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-gray-400 hover:text-white hover:bg-white/10 transition-all duration-150"
+                    >
+                        <FaRegMessage className="text-xl shrink-0" />
+                        Messages
+                    </Link>
                 </nav>
             </div>
 
             {/* Content Area */}
             <div className="flex-1 h-full overflow-y-auto bg-[#020817]">
                 <Routes>
-                    <Route path="/" element={<AdminOrdersPage/>} />
-                    <Route path="/products" element={<AdminProudctsPage/>} />
-                    <Route path="/users" element={<AdminUsersPage/>} />
-                    <Route path="/add-product" element={<AddProductForm/>}/>
-                    <Route path="/edit-product/" element={<EditProductForm/>}/>
+                    <Route path="/" element={<AdminOrdersPage />} />
+                    <Route path="/products" element={<AdminProudctsPage />} />
+                    <Route path="/users" element={<AdminUsersPage />} />
+                    <Route path="/add-product" element={<AddProductForm />} />
+                    <Route path="/edit-product/" element={<EditProductForm />} />
+                    <Route path="/contact/" element={<AdminContactPage />} />
                 </Routes>
             </div>
 
