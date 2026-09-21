@@ -40,7 +40,7 @@ import ResetPasswordPage from '../pages/resetPassword.jsx'
 
       })
       .catch(() => {
-        toast("Please login",{icon:"🚀"});
+        
         localStorage.removeItem("token");
         setUser(null);
         setUserLoadingFinished(true);
