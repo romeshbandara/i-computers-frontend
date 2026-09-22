@@ -25,7 +25,7 @@ export default function OrderModal(props) {
 
     async function handleConfirmOrder() {
         const token = localStorage.getItem("token")
-
+        
         if (token == null) {
             toast.error("Please Login")
             navigate("/login")
@@ -76,6 +76,10 @@ export default function OrderModal(props) {
         <>
             <button onClick={
                 () => {
+                    if (userData.user == null) {
+                        toast.error("Please login")
+                        return
+                    }
                     setModalIsOpen(true)
                 }
             } className="bg-green-500 flex justify-center items-center shadow-md  rounded-md text-white border-2 border-transparent hover:bg-black hover:border-white cursor-pointer transition-colors duration-200 px-2 py-2">Place Order</button>

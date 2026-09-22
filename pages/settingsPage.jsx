@@ -147,6 +147,7 @@ export default function SettingsPage() {
                             <img
                                 src={userInfo.user?.image || "/logo.webp"}
                                 alt={userInfo.user?.firstName}
+                                referrerPolicy="no-referrer"
                                 className="w-24 h-24 rounded-full object-cover border-2 border-cyan-400 shadow-[0_0_20px_rgba(34,211,238,0.3)] mb-4"
                             />
                             <h2 className="text-xl font-bold text-white">
