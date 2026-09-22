@@ -1,87 +1,67 @@
-import { useState } from "react";
-import toast from "react-hot-toast";
-import { CgBlock, CgUnblock } from "react-icons/cg";
-import Modal from "react-modal";
-import api from "../../lib/api";
-import { RiAdminFill, RiUserFill } from "react-icons/ri";
+import { useState } from "react"
+import toast from "react-hot-toast"
+import Modal from "react-modal"
+import api from "../../lib/api"
+import { RiAdminFill, RiUserFill } from "react-icons/ri"
 
-export default function ChangeRoleOfUserModal(props) {
+Modal.setAppElement("#root")
 
-    const user = props.user
-    const refresh = props.refresh
+export default function ChangeRoleOfUserModal({ user, refresh }) {
     const [modalIsOpen, setModalIsOpen] = useState(false)
+    const [isSaving, setIsSaving] = useState(false)
+    const isAdmin = Boolean(user.isAdmin)
 
     async function changeRole() {
-        const token = localStorage.getItem("token")
-
+        setIsSaving(true)
         try {
-
-            await api.put(`/users/role`, {
+            const token = localStorage.getItem("token")
+            await api.put("/users/role", {
                 email: user.email,
-                isAdmin: !user.isAdmin
+                isAdmin: !isAdmin,
             }, {
-                headers: {
-                    Authorization: "Bearer " + token
-                }
+                headers: { Authorization: "Bearer " + token },
             })
-
-            toast.success("Role changed successfully")
-            refresh()
+            toast.success(`Admin rights ${isAdmin ? "revoked" : "granted"} successfully`)
             setModalIsOpen(false)
-
+            refresh()
         } catch (err) {
-            toast.error(err.response.data.message || "Something went wrong")
+            toast.error(err.response?.data?.message || "Unable to update this user's role.")
+        } finally {
+            setIsSaving(false)
         }
     }
 
-
     return (
         <>
-            <button onClick={() => setModalIsOpen(true)} className="cursor-pointer">
-                {
-                    user.isAdmin ?
-                        <RiUserFill className="text-xl text-green-600" />
-                        :
-                        <RiAdminFill className="text-xl text-red-600" />
-                }
+            <button type="button" onClick={() => setModalIsOpen(true)} className="cursor-pointer p-1 rounded-md hover:bg-white/10 transition-colors" aria-label={isAdmin ? `Revoke admin rights from ${user.email}` : `Make ${user.email} an admin`} title={isAdmin ? "Revoke admin rights" : "Make admin"}>
+                {isAdmin ? <RiUserFill className="text-xl text-green-500" /> : <RiAdminFill className="text-xl text-red-500" />}
             </button>
 
             <Modal
                 isOpen={modalIsOpen}
-                onRequestClose={() => (setModalIsOpen(false))}
-                style={
-                    {
-                        content: {
-
-                            width: '450px',
-                            height: '200px',
-                            margin: 'auto',
-                            padding: '0px',
-                            backgroundColor: 'transparent',
-                            border: 'none',
-
-
-                        }
-                    }
-                }
+                onRequestClose={() => !isSaving && setModalIsOpen(false)}
+                shouldCloseOnOverlayClick={!isSaving}
+                shouldCloseOnEsc={!isSaving}
+                contentLabel={`${isAdmin ? "Revoke admin rights" : "Make admin"} confirmation`}
+                style={{
+                    overlay: { backgroundColor: "rgba(2, 8, 23, 0.78)", backdropFilter: "blur(6px)", zIndex: 100, display: "flex", alignItems: "center", justifyContent: "center" },
+                    content: { position: "relative", inset: "auto", width: "calc(100% - 2rem)", maxWidth: "450px", margin: 0, padding: 0, background: "transparent", border: "none", overflow: "visible" },
+                }}
             >
-
-                <div className="w-full h-full  min-h-full  bg-primary flex flex-col rounded-2xl" >
-                    <div className="w-full h-[50px] bg-accent rounded-t-2xl flex justify-center items-center ">
-                        <h1 className="text-xl text-white font-semibold">{user.isAdmin ? "Revoke Admin Rights" : "Make Admin"} </h1>
+                <div className="overflow-hidden rounded-2xl border border-white/15 bg-[#020817] text-white shadow-2xl">
+                    <div className="px-5 py-4 bg-white/5 border-b border-white/10">
+                        <h2 className="text-lg font-bold">{isAdmin ? "Revoke Admin Rights" : "Make Admin"}</h2>
+                        <p className="mt-1 text-sm text-gray-400 break-all">{user.email}</p>
                     </div>
-                    <div className="w-full h-full flex justify-center items-center gap-4 p-4">
-                        <button className="bg-red-600 text-white py-2 px-4 rounded-md hover:bg-red-700 cursor-pointer" onClick={changeRole}>
-                            {user.isAdmin ? "Revoke Admin Rights" : "Make Admin"}
-                        </button>
-                        <button className="bg-gray-600 text-white py-2 px-4 rounded-md hover:bg-gray-700 cursor-pointer" onClick={() => setModalIsOpen(false)}>
-                            Cancel
-                        </button>
+                    <div className="p-5">
+                        <p className="text-sm text-gray-300">{isAdmin ? "This user will lose access to the admin dashboard and its management tools." : "This user will gain access to the admin dashboard and its management tools."}</p>
+                        <div className="mt-6 flex flex-col-reverse sm:flex-row sm:justify-end gap-3">
+                            <button type="button" disabled={isSaving} onClick={() => setModalIsOpen(false)} className="px-4 py-2 rounded-xl bg-white/10 text-white text-sm font-semibold hover:bg-white/15 transition-all disabled:opacity-50 cursor-pointer">Cancel</button>
+                            <button type="button" disabled={isSaving} onClick={changeRole} className={`px-4 py-2 rounded-xl text-white text-sm font-semibold transition-all disabled:opacity-50 cursor-pointer ${isAdmin ? "bg-gradient-to-r from-red-500 to-rose-600" : "bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600"}`}>{isSaving ? "Saving..." : isAdmin ? "Revoke Admin Rights" : "Make Admin"}</button>
+                        </div>
                     </div>
                 </div>
-
             </Modal>
-
         </>
     )
 }

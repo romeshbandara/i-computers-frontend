@@ -95,7 +95,7 @@ export default function LoginPage() {
 
             <div className="w-full max-w-[420px] bg-white/5 backdrop-blur-xl border border-white/10 rounded-3xl shadow-2xl p-6 sm:p-8 flex flex-col items-center relative z-10">
                 <Link to="/">
-                    <img src="/logo.webp" alt="Isuri Computers" className="h-12 object-contain mb-3 hover:scale-105 transition-transform" />
+                    <img src="/logo.webp" alt="Isuri Computers" className="h-30 object-contain mb-3 hover:scale-105 transition-transform" />
                 </Link>
                 <h1 className="text-2xl font-black text-white mb-6">
                     Welcome <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Back</span>

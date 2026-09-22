@@ -6,7 +6,7 @@ import LoadingAnimation from "../../src/components/loadingAnimation.jsx";
 import { CiCircleInfo } from "react-icons/ci";
 import api from "../../lib/api.js";
 
-const CATEGORIES = ["Laptop", "Desktop", "Monitor", "Keyboard", "Mouse", "Graphic Card", "Processor", "Motherboard", "Power Suply", "RAM", "Phone"]
+const CATEGORIES = ["Laptop", "Desktop", "Monitor", "Keyboard", "Mouse", "Graphic Card", "Processor", "Motherboard", "Power Suply", "RAM", "Phone","Gaming Gear"]
 
 const fieldClass = "w-full h-[42px] rounded-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 p-3 text-sm focus:outline-none focus:border-cyan-400/60 focus:ring-1 focus:ring-cyan-400/30 transition-all [&>option]:bg-[#020817]"
 const fieldDisabledClass = "w-full h-[42px] rounded-xl bg-white/[0.03] border border-white/5 text-gray-500 p-3 text-sm cursor-not-allowed"
@@ -88,14 +88,14 @@ export default function EditProductForm() {
             <div className="relative z-10 w-full max-w-[1000px] mx-auto">
 
                 {/* Header */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex items-center justify-between gap-4 mb-8 shadow-xl">
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 mb-8 shadow-xl">
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-black">
                             Edit <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Product</span>
                         </h1>
                         <p className="text-xs text-gray-400 mt-1 font-mono">ID: {productId}</p>
                     </div>
-                    <div className="flex gap-3">
+                    <div className="w-full sm:w-auto flex gap-3">
                         <button
                             onClick={handleUpdate}
                             className="px-5 py-2 bg-gradient-to-r from-green-500 to-emerald-600 text-white text-sm font-semibold rounded-xl cursor-pointer shadow-lg hover:scale-105 active:scale-95 transition-all"
@@ -124,7 +124,7 @@ export default function EditProductForm() {
                 )}
 
                 {/* Form Grid */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-6 shadow-xl flex flex-wrap gap-5">
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-6 shadow-xl flex flex-wrap gap-5">
 
                     <div className="w-full sm:w-[18%] flex flex-col">
                         <label className={labelClass}>Product ID</label>

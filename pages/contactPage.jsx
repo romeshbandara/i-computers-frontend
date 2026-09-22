@@ -8,7 +8,7 @@ export default function ContactPage() {
     const userInfo = useContext(UserContext)
     const [formData, setFormData] = useState({
         name: "",
-        email: userInfo.user.email,
+        email: userInfo.user?.email,
         subject: "",
         message: ""
     })
@@ -164,10 +164,16 @@ export default function ContactPage() {
                                     className="w-full bg-white/5 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-400/20 text-sm transition-all resize-none"
                                 />
                             </div>
-
+                            
                             <button
                                 type="submit"
-                                onClick={handleMessage}
+                                onClick={()=>{
+                                    if(userInfo.user == null){
+                                        toast.error("Please login")
+                                        return
+                                    }
+                                    handleMessage()
+                                }}
                                 disabled={sending}
                                 className="w-full sm:w-auto inline-flex items-center justify-center gap-2.5 px-8 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 font-semibold text-white shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-[1.02] active:scale-95 transition-all cursor-pointer disabled:opacity-50"
                             >
