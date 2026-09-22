@@ -39,7 +39,7 @@ export default function AdminProductsPage() {
                 )}
 
                 {/* Top Control Bar */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 mb-6 shadow-xl">
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-wrap items-start sm:items-center justify-between gap-4 mb-6 shadow-xl">
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-black">
                             All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Products</span>
@@ -58,8 +58,8 @@ export default function AdminProductsPage() {
                 </div>
 
                 {/* Products Table */}
-                <div className="w-full overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl">
-                    <table className="w-full text-center border-collapse">
+                <div className="w-full overflow-x-auto overscroll-x-contain rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl">
+                    <table className="w-full min-w-[1100px] text-center border-collapse">
                         <thead className="bg-white/10 border-b border-white/10 text-cyan-400 text-xs sm:text-sm uppercase tracking-wider font-semibold">
                             <tr>
                                 <th className="p-3.5">Image</th>
@@ -134,7 +134,7 @@ export default function AdminProductsPage() {
             {/* Floating Add Button */}
             <Link
                 to="/admin/add-product"
-                className="w-[56px] h-[56px] bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 text-white text-xl rounded-full flex items-center justify-center fixed right-8 bottom-8 shadow-lg shadow-blue-500/40 hover:scale-110 active:scale-95 transition-all z-50"
+                className="w-[56px] h-[56px] bg-gradient-to-br from-cyan-500 via-blue-600 to-purple-600 text-white text-xl rounded-full flex items-center justify-center fixed right-4 bottom-4 sm:right-8 sm:bottom-8 shadow-lg shadow-blue-500/40 hover:scale-110 active:scale-95 transition-all z-50"
                 title="Add new product"
             >
                 <FaPlus />

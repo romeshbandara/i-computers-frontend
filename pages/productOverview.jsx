@@ -1,6 +1,6 @@
 import { Link, useLoaderData, useLocation, useParams } from "react-router-dom"
 import api from "../lib/api"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
 import LoadingAnimation from "../src/components/loadingAnimation"
 import toast from "react-hot-toast"
 import ImageSlideShow from "../src/components/imageSlideShow"
@@ -10,10 +10,13 @@ import { FiBox } from "react-icons/fi"
 import getFormattedPrice from "../lib/priceFormat"
 import { GrCart } from "react-icons/gr"
 import { addToCart, getCart } from "../lib/cart"
+import ReviewProduct from "../src/components/reviewProduct"
+import UserContext from "../src/context/userContext"
 
 
 export default function ProductOverview(){
 
+    const userInfo = useContext(UserContext)
     const params = useParams()
     const location = useLocation()
     
@@ -22,7 +25,8 @@ export default function ProductOverview(){
 
     const [product,setProduct] = useState(location.state)
     const [loading,setLoading] = useState(true)
-
+    const[reviews,setReviews]=useState(null)
+    
     
     
 
@@ -33,8 +37,9 @@ export default function ProductOverview(){
         }).catch(()=>{
             toast.error("error load product")
             setProduct(null)
-        })
-    })
+        });
+        api.get("/review/"+params.productId).then((res)=>{setReviews(res.data)}).catch((err)=>{toast.error(err); setReviews(null)})
+    },[loading])
 
 
     
@@ -56,11 +61,15 @@ export default function ProductOverview(){
                 {product != null && (
                     <div className="w-full flex lg:flex-row flex-col gap-10 items-start">
                         {/* Left: Product Images */}
-                        <div className="lg:w-1/2 w-full flex items-center justify-center">
+                        <div className="lg:w-1/2 w-full flex flex-col items-center justify-center gap-12">
                             <div className="w-full max-w-lg bg-white/5 backdrop-blur-md border border-white/10 rounded-3xl p-6  shadow-2xl flex justify-center items-center">
                                 <ImageSlideShow images={product.images} />
                             </div>
+                            <div className="hidden lg:block w-full">
+                                <ReviewProduct reviews={reviews} productId={product.productId} refresh={() => { setLoading(true) }} />
+                            </div>
                         </div>
+                        
 
                         {/* Right: Details */}
                         <div className="lg:w-1/2 w-full flex flex-col">
@@ -109,6 +118,7 @@ export default function ProductOverview(){
                             <div className="flex flex-wrap gap-4 mt-8">
                                 <Link
                                     to="/checkout"
+                                    
                                     state={[
                                         {
                                             product: {
@@ -129,6 +139,10 @@ export default function ProductOverview(){
                                 <button
                                     className="px-7 py-3.5 rounded-xl border border-cyan-400/40 bg-cyan-500/10 text-cyan-400 font-bold hover:bg-cyan-500/20 hover:border-cyan-400 transition-all flex items-center gap-2 cursor-pointer active:scale-95 shadow-sm"
                                     onClick={() => {
+                                        if (userInfo.user == null) {
+                                            toast.error("Please login")
+                                            return
+                                        }
                                         addToCart(product, 1)
                                         toast.success("Product added to cart!")
                                     }}
@@ -148,7 +162,13 @@ export default function ProductOverview(){
                                     {product.description}
                                 </p>
                             </div>
+                            
                         </div>
+
+                        <div className="w-full lg:hidden">
+                            <ReviewProduct reviews={reviews} productId={product.productId} refresh={() => { setLoading(true) }} />
+                        </div>
+                        
                     </div>
                 )}
 

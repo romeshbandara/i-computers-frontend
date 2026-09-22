@@ -66,6 +66,7 @@ export default function Header() {
                 <div className="h-full lg:flex items-center gap-6 hidden">
                     <Link
                         to="/cart"
+                        
                         className="p-2.5 rounded-xl border border-white/10 bg-white/5 text-gray-300 hover:text-cyan-400 hover:border-cyan-400/50 hover:shadow-[0_0_15px_rgba(34,211,238,0.2)] transition-all"
                         aria-label="Cart"
                     >

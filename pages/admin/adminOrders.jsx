@@ -47,7 +47,7 @@ export default function AdminOrdersPage() {
                 )}
 
                 {/* Top Control Bar */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4 mb-6 shadow-xl">
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-wrap items-start sm:items-center justify-between gap-4 mb-6 shadow-xl">
                     <div>
                         <h1 className="text-2xl sm:text-3xl font-black">
                             All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Orders</span>
@@ -85,8 +85,8 @@ export default function AdminOrdersPage() {
                 </div>
 
                 {/* Orders Table Container */}
-                <div className="w-full overflow-x-auto rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl mb-8">
-                    <table className="w-full text-center border-collapse">
+                <div className="w-full overflow-x-auto overscroll-x-contain rounded-2xl border border-white/10 bg-white/5 backdrop-blur-md shadow-2xl mb-8">
+                    <table className="w-full min-w-[1100px] text-center border-collapse">
                         <thead className="bg-white/10 border-b border-white/10 text-cyan-400 text-xs sm:text-sm uppercase tracking-wider font-semibold">
                             <tr>
                                 <th className="p-3.5">Order ID</th>
@@ -151,11 +151,11 @@ export default function AdminOrdersPage() {
                 </div>
 
                 {/* Floating Pagination Bar */}
-                <div className="fixed bottom-6 left-0 w-full flex justify-center z-30 pointer-events-none">
-                    <div className="bg-[#020817]/90 backdrop-blur-xl border border-white/15 shadow-[0_10px_35px_rgba(0,0,0,0.6)] rounded-full px-5 py-2.5 flex items-center gap-4 pointer-events-auto">
+                <div className="fixed bottom-3 sm:bottom-6 left-0 w-full lg:left-[240px] lg:w-[calc(100%-240px)] flex justify-center z-30 pointer-events-none">
+                    <div className="bg-[#020817]/90 backdrop-blur-xl border border-white/15 shadow-[0_10px_35px_rgba(0,0,0,0.6)] rounded-full px-3 sm:px-5 py-2.5 flex items-center gap-2 sm:gap-4 pointer-events-auto">
                         <button
                             disabled={currentPage === 1}
-                            className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-cyan-500/20 text-gray-200 hover:text-cyan-300 text-xs font-semibold transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                            className="px-3 sm:px-4 py-1.5 rounded-full bg-white/10 hover:bg-cyan-500/20 text-gray-200 hover:text-cyan-300 text-xs font-semibold transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
                             onClick={() => {
                                 if (currentPage > 1) {
                                     setCurrentPage(currentPage - 1);
@@ -172,7 +172,7 @@ export default function AdminOrdersPage() {
 
                         <button
                             disabled={currentPage === totalPages}
-                            className="px-4 py-1.5 rounded-full bg-white/10 hover:bg-cyan-500/20 text-gray-200 hover:text-cyan-300 text-xs font-semibold transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
+                            className="px-3 sm:px-4 py-1.5 rounded-full bg-white/10 hover:bg-cyan-500/20 text-gray-200 hover:text-cyan-300 text-xs font-semibold transition-all disabled:opacity-30 disabled:pointer-events-none cursor-pointer"
                             onClick={() => {
                                 if (currentPage < totalPages) {
                                     setCurrentPage(currentPage + 1);
