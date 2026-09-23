@@ -14,23 +14,61 @@ export default function OrderModal(props) {
     const [modalIsOpen, setModalIsOpen] = useState(false)
     const [firstName, setFirstName] = useState(userData.user?.firstName || "")
     const [lastName, setLastName] = useState(userData.user?.lastName || "")
-    const [addressLine1, setAddressLine1] = useState( "")
-    const [addressLine2, setAddressLine2] = useState( "")
-    const [city, setCity] = useState( "")
+    const [addressLine1, setAddressLine1] = useState("")
+    const [addressLine2, setAddressLine2] = useState("")
+    const [city, setCity] = useState("")
     const [postalCode, setPostalCode] = useState("")
     const [phoneNumber, setPhoneNumber] = useState("")
     const [secondaryPhoneNumber, setSecondaryPhoneNumber] = useState("")
     const [specialNote, setSpecialNote] = useState("")
+    const [purchasing, setPurchasing] = useState(false)
     const navigate = useNavigate()
 
     async function handleConfirmOrder() {
         const token = localStorage.getItem("token")
-        
+
         if (token == null) {
             toast.error("Please Login")
             navigate("/login")
             return
         }
+
+        if(firstName == ""){
+            toast.error("Please fill the First Name")
+            setPurchasing(false)
+            return
+        }
+        if(lastName == ""){
+            toast.error("Please fill the Last Name")
+            setPurchasing(false)
+            return
+        }
+        if(addressLine1 == ""){
+            toast.error("Please fill the Address Line 1")
+            setPurchasing(false)
+            return
+        }
+        if(addressLine2 == ""){
+            toast.error("Please fill the Address Line 2")
+            setPurchasing(false)
+            return
+        }
+        if(city == ""){
+            toast.error("Please fill the City")
+            setPurchasing(false)
+            return
+        }
+        if(postalCode == ""){
+            toast.error("Please fill the Postal Code")
+            setPurchasing(false)
+            return
+        }
+        if(phoneNumber == ""){
+            toast.error("Please fill the Phone")
+            setPurchasing(false)
+            return
+        }
+
 
         const orderData = {
             firstName: firstName,
@@ -47,7 +85,7 @@ export default function OrderModal(props) {
 
         for (let i = 0; i < props.cart.length; i++) {
             orderData.items.push({
-                productId:props.cart[i].product.productId,
+                productId: props.cart[i].product.productId,
                 qty: props.cart[i].qty
             })
         }
@@ -55,16 +93,18 @@ export default function OrderModal(props) {
         try {
 
             await api.post("/orders", orderData, {
-                headers:{
+                headers: {
                     Authorization: "Bearer " + token
                 }
-            }).then(()=>{
+            }).then(() => {
                 toast.success("Order Placed Successfully!")
+                setPurchasing(false)
                 localStorage.removeItem("cart")
                 setModalIsOpen(false)
                 navigate("/products")
-            })
-            
+
+            }).catch((err) => { console.log(err); toast.error("Order placing error!"); setPurchasing(false) })
+
         } catch (error) {
             console.log(error)
         }
@@ -129,37 +169,37 @@ export default function OrderModal(props) {
                     </div>
                     <div className="w-full gap-x-[10%] gap-y-0 p-4 flex flex-wrap">
                         <div className="w-full sm:w-[45%] flex flex-col">
-                            <label className="text-secondary text-md">First Name</label>
+                            <label className="text-secondary text-md">First Name *</label>
                             <input value={firstName} onChange={(e) => { setFirstName(e.target.value) }} type="text" placeholder="Jhon" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
                         <div className="w-full sm:w-[45%] flex flex-col mt-3 sm:mt-0">
-                            <label className="text-secondary text-md">Last Name</label>
+                            <label className="text-secondary text-md">Last Name *</label>
                             <input value={lastName} onChange={(e) => { setLastName(e.target.value) }} type="text" placeholder="Doe" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
                         <div className="w-full mt-3 flex flex-col">
-                            <label className="text-secondary text-md">Address Line 1</label>
+                            <label className="text-secondary text-md">Address Line 1 *</label>
                             <input value={addressLine1} onChange={(e) => { setAddressLine1(e.target.value) }} type="text" placeholder="No:21/B" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
                         <div className="w-full mt-3 flex flex-col">
-                            <label className="text-secondary text-md">Address Line 2</label>
+                            <label className="text-secondary text-md">Address Line 2 *</label>
                             <input value={addressLine2} onChange={(e) => { setAddressLine2(e.target.value) }} type="text" placeholder="TB Jaya Mawatha, Colombo 07" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
                         <div className="w-full sm:w-[45%] mt-3 flex flex-col">
-                            <label className="text-secondary text-md">City</label>
+                            <label className="text-secondary text-md">City *</label>
                             <input value={city} onChange={(e) => { setCity(e.target.value) }} type="text" placeholder="Colombo" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
                         <div className="w-full sm:w-[45%] mt-3 flex flex-col">
-                            <label className="text-secondary text-md">Postal Code</label>
+                            <label className="text-secondary text-md">Postal Code *</label>
                             <input value={postalCode} onChange={(e) => { setPostalCode(e.target.value) }} type="text" placeholder="50300" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
                         <div className="w-full sm:w-[45%] mt-3 flex flex-col">
-                            <label className="text-secondary text-md">Phone</label>
+                            <label className="text-secondary text-md">Phone *</label>
                             <input value={phoneNumber} onChange={(e) => { setPhoneNumber(e.target.value) }} type="text" placeholder="+94 71 123 4562" className="w-full h-[40px] border-2 border-secondary rounded-md p-2" />
                         </div>
 
@@ -176,7 +216,16 @@ export default function OrderModal(props) {
                     </div>
 
                     <div className="w-full h-[80px] bg-accent rounded-b-2xl sticky bottom-0 justify-center flex flex-row items-center gap-4 p-4">
-                        <button onClick={handleConfirmOrder} className="bg-green-600 px-4 py-2 text-white rounded-md hover:bg-green-800 cursor-pointer transition-colors duration-100">Purchase</button>
+                        <button
+                            disabled={purchasing}
+                            onClick={() => {
+                                setPurchasing(true);
+                                handleConfirmOrder();
+                            }}
+                            className="bg-green-600 px-4 py-2 text-white rounded-md hover:bg-green-800 cursor-pointer transition-colors duration-100 disabled:bg-gray-400 disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                            Purchase
+                        </button>
                         <button onClick={() => { setModalIsOpen(false) }} className="bg-red-600 px-4 py-2 text-white rounded-md hover:bg-red-800 cursor-pointer transition-colors duration-100">Cancel</button>
                     </div>
 
