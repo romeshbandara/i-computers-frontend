@@ -1,6 +1,7 @@
 import { Link } from "react-router-dom";
 import { FaPlus } from "react-icons/fa";
 import { CiEdit } from "react-icons/ci";
+import { LuSearch, LuX } from "react-icons/lu";
 import api from "../../lib/api";
 import { useEffect, useState } from "react";
 import LoadingAnimation from "../../src/components/loadingAnimation.jsx";
@@ -10,20 +11,36 @@ export default function AdminProductsPage() {
 
     const [products, setProducts] = useState([])
     const [isLoading, setIsLoading] = useState(true)
+    const [searchQuery, setSearchQuery] = useState("")
     const token = localStorage.getItem("token")
 
     useEffect(() => {
+        if (!isLoading) return;
         api.get("/products", {
             headers: {
                 Authorization: "Bearer " + token
             }
         }).then((response) => {
-            if (isLoading) {
-                setProducts(response.data)
-                setIsLoading(false)
-            }
+            setProducts(response.data || [])
+        }).catch((err) => {
+            console.error("Failed to fetch products:", err)
+        }).finally(() => {
+            setIsLoading(false)
         })
-    }, [isLoading])
+    }, [isLoading, token])
+
+    const filteredProducts = products.filter((item) => {
+        if (!searchQuery.trim()) return true
+        const q = searchQuery.toLowerCase().trim()
+        return (
+            item.name?.toLowerCase().includes(q) ||
+            item.productId?.toLowerCase().includes(q) ||
+            item.brand?.toLowerCase().includes(q) ||
+            item.category?.toLowerCase().includes(q) ||
+            item.model?.toLowerCase().includes(q) ||
+            (Array.isArray(item.altNames) && item.altNames.some(alt => alt.toLowerCase().includes(q)))
+        )
+    })
 
     return (
         <div className="w-full min-h-full bg-[#020817] text-white relative overflow-hidden flex flex-col p-4 sm:p-8 pb-28">
@@ -39,22 +56,52 @@ export default function AdminProductsPage() {
                 )}
 
                 {/* Top Control Bar */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-wrap items-start sm:items-center justify-between gap-4 mb-6 shadow-xl">
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-black">
-                            All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Products</span>
-                        </h1>
-                        <p className="text-xs sm:text-sm text-gray-400 mt-1">
-                            Total {products.length} product{products.length !== 1 ? "s" : ""}
-                        </p>
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 mb-6 shadow-xl">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl sm:text-3xl font-black">
+                                All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Products</span>
+                            </h1>
+                            <p className="text-xs sm:text-sm text-gray-400 mt-1">
+                                Total {products.length} product{products.length !== 1 ? "s" : ""}
+                                {searchQuery.trim() && (
+                                    <span className="text-cyan-400 font-medium ml-1">
+                                        ({filteredProducts.length} matching)
+                                    </span>
+                                )}
+                            </p>
+                        </div>
+
+                        <button
+                            className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all self-end sm:self-auto"
+                            onClick={() => setIsLoading(true)}
+                        >
+                            Refresh
+                        </button>
                     </div>
 
-                    <button
-                        className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all"
-                        onClick={() => setIsLoading(true)}
-                    >
-                        Refresh
-                    </button>
+                    {/* Search Bar */}
+                    <div className="relative flex items-center bg-white/5 border border-white/10 rounded-xl px-3.5 py-2 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-400/20 transition-all">
+                        <LuSearch className="text-gray-400 text-base shrink-0 mr-3 pointer-events-none" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyUp={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search by product name, ID, category, brand, model..."
+                            className="w-full bg-transparent text-white placeholder-gray-400 text-xs sm:text-sm outline-none"
+                        />
+                        {searchQuery && (
+                            <button
+                                type="button"
+                                onClick={() => setSearchQuery("")}
+                                className="p-1 text-gray-400 hover:text-white transition-colors cursor-pointer mr-1"
+                                title="Clear search"
+                            >
+                                <LuX className="text-base" />
+                            </button>
+                        )}
+                    </div>
                 </div>
 
                 {/* Products Table */}
@@ -76,7 +123,7 @@ export default function AdminProductsPage() {
                         </thead>
 
                         <tbody className="divide-y divide-white/5 text-xs sm:text-sm text-gray-300">
-                            {products.map((item, index) => (
+                            {filteredProducts.map((item, index) => (
                                 <tr key={index} className="hover:bg-white/[0.07] transition-colors">
                                     <td className="p-3">
                                         <img
@@ -113,16 +160,28 @@ export default function AdminProductsPage() {
                                             >
                                                 <CiEdit />
                                             </Link>
-                                            <DeleteProductModel product={item} refresh={() => { setIsLoading(true) }} />
+                                            <DeleteProductModel product={item} refresh={() => setIsLoading(true)} />
                                         </div>
                                     </td>
                                 </tr>
                             ))}
 
-                            {products.length === 0 && !isLoading && (
+                            {filteredProducts.length === 0 && !isLoading && (
                                 <tr>
                                     <td colSpan="10" className="py-12 text-center text-gray-400">
-                                        No products found.
+                                        {searchQuery.trim() ? (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <p>No products found matching "{searchQuery.trim()}".</p>
+                                                <button
+                                                    onClick={() => setSearchQuery("")}
+                                                    className="text-xs text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
+                                                >
+                                                    Clear search
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            "No products found."
+                                        )}
                                     </td>
                                 </tr>
                             )}
