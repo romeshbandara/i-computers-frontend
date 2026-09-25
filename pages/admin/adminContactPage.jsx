@@ -16,37 +16,68 @@ export default function AdminContactPage() {
     const [pageSize, setPageSize] = useState(10)
     const [searchQuery, setSearchQuery] = useState("")
     const [appliedSearch, setAppliedSearch] = useState("")
+    const [refreshIndex, setRefreshIndex] = useState(0)
+
+    // Live search on key release with 250ms debounce (instant when cleared)
+    useEffect(() => {
+        const trimmed = searchQuery.trim()
+        if (!trimmed) {
+            setAppliedSearch("")
+            setCurrentPage(1)
+            return
+        }
+
+        const timer = setTimeout(() => {
+            setAppliedSearch(trimmed)
+            setCurrentPage(1)
+        }, 250)
+
+        return () => clearTimeout(timer)
+    }, [searchQuery])
 
     useEffect(() => {
-        if (!isLoading) return;
+        let isCancelled = false
+        setIsLoading(true)
+
         const queryParam = appliedSearch ? `?search=${encodeURIComponent(appliedSearch)}` : ""
         api.get(`/contact/message/${pageSize}/${currentPage}${queryParam}`, {
             headers: {
                 Authorization: "Bearer " + token
             }
         }).then((response) => {
-            setMessages(response.data.messages || [])
-            setTotalPages(response.data.totalPages || 1)
-            setTotalMessages(response.data.totalCount || 0)
+            if (isCancelled) return
+            setMessages(response.data?.messages || [])
+            setTotalPages(response.data?.totalPages || 1)
+            setTotalMessages(response.data?.totalCount || 0)
         }).catch((err) => {
+            if (isCancelled) return
             console.error("Failed to load messages:", err)
         }).finally(() => {
-            setIsLoading(false)
+            if (!isCancelled) {
+                setIsLoading(false)
+            }
         })
-    }, [isLoading, appliedSearch, currentPage, pageSize, token])
 
-    const handleSearchSubmit = (e) => {
-        e.preventDefault()
-        setAppliedSearch(searchQuery.trim())
-        setCurrentPage(1)
-        setIsLoading(true)
-    }
+        return () => {
+            isCancelled = true
+        }
+    }, [appliedSearch, currentPage, pageSize, refreshIndex, token])
 
     const handleClearSearch = () => {
         setSearchQuery("")
         setAppliedSearch("")
         setCurrentPage(1)
-        setIsLoading(true)
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            e.preventDefault()
+            const trimmed = searchQuery.trim()
+            if (appliedSearch !== trimmed) {
+                setAppliedSearch(trimmed)
+                setCurrentPage(1)
+            }
+        }
     }
 
     return (
@@ -64,7 +95,7 @@ export default function AdminContactPage() {
 
                 {/* Top Control Bar */}
                 <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 mb-6 shadow-xl">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h1 className="text-2xl sm:text-3xl font-black">
                                 All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Messages</span>
@@ -79,7 +110,7 @@ export default function AdminContactPage() {
                             </p>
                         </div>
 
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-3 self-end sm:self-auto">
                             <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs sm:text-sm text-gray-300">
                                 <label className="text-gray-400">Items/page:</label>
                                 <select
@@ -99,20 +130,22 @@ export default function AdminContactPage() {
 
                             <button
                                 className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all"
-                                onClick={() => setIsLoading(true)}
+                                onClick={() => setRefreshIndex((prev) => prev + 1)}
                             >
                                 Refresh
                             </button>
                         </div>
                     </div>
 
-                    {/* Search Form */}
-                    <form onSubmit={handleSearchSubmit} className="relative flex items-center bg-white/5 border border-white/10 rounded-xl px-3.5 py-2 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-400/20 transition-all">
+                    {/* Search Bar - Live Filter on Key Release */}
+                    <div className="relative flex items-center bg-white/5 border border-white/10 rounded-xl px-3.5 py-2 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-400/20 transition-all">
                         <LuSearch className="text-gray-400 text-base shrink-0 mr-3 pointer-events-none" />
                         <input
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyUp={(e) => setSearchQuery(e.target.value)}
+                            onKeyDown={handleKeyDown}
                             placeholder="Search by name, email, subject, message content..."
                             className="w-full bg-transparent text-white placeholder-gray-400 text-xs sm:text-sm outline-none"
                         />
@@ -120,19 +153,13 @@ export default function AdminContactPage() {
                             <button
                                 type="button"
                                 onClick={handleClearSearch}
-                                className="p-1 text-gray-400 hover:text-white transition-colors cursor-pointer mr-2"
+                                className="p-1 text-gray-400 hover:text-white transition-colors cursor-pointer mr-1"
                                 title="Clear search"
                             >
                                 <LuX className="text-base" />
                             </button>
                         )}
-                        <button
-                            type="submit"
-                            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-4 py-1.5 rounded-lg text-xs font-semibold cursor-pointer shadow-md transition-all active:scale-95 shrink-0"
-                        >
-                            Search
-                        </button>
-                    </form>
+                    </div>
                 </div>
 
                 {/* Messages Table Container */}
@@ -162,7 +189,7 @@ export default function AdminContactPage() {
                                     <td className="p-3.5 max-w-60 font-medium text-white truncate">{item.message}</td>
                                     <td className="p-3.5">
                                         <div className="flex justify-center items-center">
-                                            <MessageModal item={item} refresh={() => setIsLoading(true)}/>
+                                            <MessageModal item={item} refresh={() => setRefreshIndex((prev) => prev + 1)}/>
                                         </div>
                                     </td>
                                 </tr>
@@ -200,7 +227,6 @@ export default function AdminContactPage() {
                             onClick={() => {
                                 if (currentPage > 1) {
                                     setCurrentPage(currentPage - 1);
-                                    setIsLoading(true);
                                 }
                             }}
                         >
@@ -217,7 +243,6 @@ export default function AdminContactPage() {
                             onClick={() => {
                                 if (currentPage < totalPages) {
                                     setCurrentPage(currentPage + 1);
-                                    setIsLoading(true);
                                 }
                             }}
                         >

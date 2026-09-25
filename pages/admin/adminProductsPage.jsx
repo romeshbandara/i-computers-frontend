@@ -57,7 +57,7 @@ export default function AdminProductsPage() {
 
                 {/* Top Control Bar */}
                 <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 mb-6 shadow-xl">
-                    <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                         <div>
                             <h1 className="text-2xl sm:text-3xl font-black">
                                 All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Products</span>
@@ -73,7 +73,7 @@ export default function AdminProductsPage() {
                         </div>
 
                         <button
-                            className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all"
+                            className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all self-end sm:self-auto"
                             onClick={() => setIsLoading(true)}
                         >
                             Refresh
@@ -87,6 +87,7 @@ export default function AdminProductsPage() {
                             type="text"
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
+                            onKeyUp={(e) => setSearchQuery(e.target.value)}
                             placeholder="Search by product name, ID, category, brand, model..."
                             className="w-full bg-transparent text-white placeholder-gray-400 text-xs sm:text-sm outline-none"
                         />
