@@ -24,67 +24,59 @@ const CATEGORIES = [
 export default function ProductsPage() {
 
     const location = useLocation()
-    const [products, setProducts] = useState([])
+    const [allProducts, setAllProducts] = useState([])
     const [loading, setLoading] = useState(true)
-    const [searching, setSearching] = useState(false)
     const [query, setQuery] = useState("")
     const [filter, setFilter] = useState(location?.state || "filter")
 
+    const fetchProducts = () => {
+        setLoading(true)
+        api.get("/products").then((response) => {
+            setAllProducts(response.data || [])
+            setLoading(false)
+        }).catch((err) => {
+            console.error("Failed to load products:", err)
+            toast.error("Failed to load products")
+            setLoading(false)
+        })
+    }
+
     useEffect(() => {
+        fetchProducts()
+    }, [])
 
-        if (loading) {
-            api.get("/products").then((response) => {
-                setProducts(response.data)
-                setLoading(false)
-            }).catch(() => {
-                toast.error("Error")
-            })
+    useEffect(() => {
+        if (location?.state) {
+            setFilter(location.state)
         }
-
-        if (filter != "filter") {
-            handleFilter(filter)
-        }
-
-    }, [loading])
-
-    async function handleSearch() {
-
-        if (query == "") {
-            return toast.error("Please enter search keyword")
-        }
-
-        setSearching(true)
-
-        try {
-            const response = await api.get("/products/search/" + query)
-            setProducts(response.data)
-            setSearching(false)
-        } catch (err) {
-            toast.error("Search Failed!")
-        }
-    }
-
-    async function handleFilter(selectedFilter) {
-        setFilter(selectedFilter)
-        if (selectedFilter == "filter") {
-            return toast.error("Please select a category")
-        }
-        setSearching(true)
-        try {
-            const response = await api.get("/products/filter/" + selectedFilter)
-            setProducts(response.data)
-            setSearching(false)
-        } catch (err) {
-            setSearching(false)
-            return toast.error("Failed to filter products")
-        }
-    }
+    }, [location?.state])
 
     const handleReset = () => {
         setQuery("")
         setFilter("filter")
-        setLoading(true)
     }
+
+    // Instant filter on key release / query change / category filter
+    const filteredProducts = allProducts.filter((product) => {
+        // Category check
+        if (filter !== "filter" && product.category?.toLowerCase() !== filter.toLowerCase()) {
+            return false
+        }
+
+        // Search query check
+        if (!query.trim()) return true
+        const q = query.toLowerCase().trim()
+        const words = q.split(/\s+/).filter(Boolean)
+        return words.every((word) =>
+            product.name?.toLowerCase().includes(word) ||
+            product.productId?.toLowerCase().includes(word) ||
+            product.brand?.toLowerCase().includes(word) ||
+            product.category?.toLowerCase().includes(word) ||
+            product.model?.toLowerCase().includes(word) ||
+            product.description?.toLowerCase().includes(word) ||
+            (Array.isArray(product.altNames) && product.altNames.some((alt) => alt.toLowerCase().includes(word)))
+        )
+    })
 
     return (
         <main className="w-full min-h-[calc(100vh-85px)] bg-[#020817] text-white relative overflow-hidden flex flex-col pb-28">
@@ -97,24 +89,20 @@ export default function ProductsPage() {
                 {/* Unified Desktop & Mobile Search Bar */}
                 <div className="w-full max-w-4xl mx-auto mb-8">
                     <div className="bg-white/5 backdrop-blur-xl rounded-2xl sm:rounded-3xl shadow-2xl border border-white/10 p-3.5 sm:p-5 flex flex-col gap-3">
-                        {/* Search Input Box */}
+                        {/* Search Input Box - Live Instant Filter on Key Release */}
                         <div className="relative flex items-center bg-white/5 border border-white/10 rounded-xl sm:rounded-2xl px-3.5 py-2.5 sm:py-3 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-400/20 transition-all">
                             <LuSearch className="text-gray-400 text-lg sm:text-xl shrink-0 mr-3 pointer-events-none" />
                             <input
-                                type="search"
+                                type="text"
                                 enterKeyHint="search"
                                 autoCapitalize="none"
                                 autoCorrect="off"
                                 spellCheck="false"
                                 value={query}
                                 onChange={(e) => setQuery(e.target.value)}
-                                onKeyDown={(e) => {
-                                    if (e.key === "Enter") {
-                                        handleSearch();
-                                    }
-                                }}
+                                onKeyUp={(e) => setQuery(e.target.value)}
                                 placeholder="Search laptops, GPUs, keyboards, accessories..."
-                                className="w-full bg-transparent text-white placeholder-gray-400 text-base outline-none min-h-[34px] [&::-webkit-search-cancel-button]:hidden [&::-webkit-search-decoration]:hidden"
+                                className="w-full bg-transparent text-white placeholder-gray-400 text-sm sm:text-base outline-none min-h-[34px]"
                             />
                             {query && (
                                 <button
@@ -122,17 +110,11 @@ export default function ProductsPage() {
                                     onClick={() => setQuery("")}
                                     className="p-1.5 text-gray-400 hover:text-white active:scale-90 transition-transform cursor-pointer mr-1"
                                     aria-label="Clear search"
+                                    title="Clear search"
                                 >
                                     <LuX className="text-lg" />
                                 </button>
                             )}
-                            <button
-                                onClick={handleSearch}
-                                disabled={searching}
-                                className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-4 sm:px-6 py-2 sm:py-2.5 rounded-xl text-sm font-semibold shrink-0 cursor-pointer active:scale-95 transition-all hover:shadow-lg hover:shadow-cyan-500/25 shadow-md shadow-blue-600/30 disabled:opacity-50"
-                            >
-                                Search
-                            </button>
                         </div>
 
                         {/* Filter Dropdown & Reset Action Bar */}
@@ -144,14 +126,14 @@ export default function ProductsPage() {
                                 </div>
                                 <select
                                     value={filter}
-                                    onChange={(e) => handleFilter(e.target.value)}
-                                    className={`w-full appearance-none pl-9 sm:pl-10 pr-9 py-2 sm:py-2.5 text-sm rounded-xl border transition-all cursor-pointer font-medium outline-none ${
+                                    onChange={(e) => setFilter(e.target.value)}
+                                    className={`w-full appearance-none pl-9 sm:pl-10 pr-9 py-2 sm:py-2.5 text-xs sm:text-sm rounded-xl border transition-all cursor-pointer font-medium outline-none ${
                                         filter !== "filter"
                                             ? "bg-cyan-500/20 border-cyan-400 text-cyan-300 font-semibold shadow-[0_0_12px_rgba(34,211,238,0.2)]"
                                             : "bg-white/5 border-white/10 text-gray-300 hover:bg-white/10 hover:text-white"
                                     } [&>option]:bg-[#020817] [&>option]:text-white`}
                                 >
-                                    <option value="filter" disabled>Filter by Category</option>
+                                    <option value="filter">All Categories</option>
                                     {CATEGORIES.map((cat) => (
                                         <option key={cat.value} value={cat.value}>
                                             {cat.label}
@@ -168,7 +150,7 @@ export default function ProductsPage() {
                                 onClick={handleReset}
                                 title="Reset filters"
                                 aria-label="Reset all filters"
-                                className={`h-[38px] sm:h-[42px] px-4 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold shrink-0 cursor-pointer active:scale-95 transition-all outline-none ${
+                                className={`h-[38px] sm:h-[42px] px-3.5 sm:px-4 rounded-xl border flex items-center justify-center gap-2 text-xs font-semibold shrink-0 cursor-pointer active:scale-95 transition-all outline-none ${
                                     query !== "" || filter !== "filter"
                                         ? "bg-gradient-to-r from-cyan-500/20 to-blue-600/20 text-cyan-400 border-cyan-400 shadow-[0_0_12px_rgba(34,211,238,0.3)]"
                                         : "bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white border-white/10"
@@ -196,7 +178,7 @@ export default function ProductsPage() {
                                 <button
                                     key={cat.value}
                                     type="button"
-                                    onClick={() => handleFilter(cat.value)}
+                                    onClick={() => setFilter(cat.value)}
                                     className={`px-3.5 py-1.5 rounded-full whitespace-nowrap font-medium transition-all cursor-pointer shrink-0 active:scale-95 ${
                                         filter === cat.value
                                             ? "bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white font-semibold shadow-[0_0_15px_rgba(34,211,238,0.4)]"
@@ -211,25 +193,27 @@ export default function ProductsPage() {
                 </div>
 
                 {/* Product Catalog Grid */}
-                {loading || searching ? (
+                {loading ? (
                     <div className="py-20 flex justify-center items-center">
                         <LoadingAnimation />
                     </div>
                 ) : (
-                    <div className="flex flex-wrap justify-center content-start gap-2">
-                        {products.map((product, index) => (
+                    <div className="flex flex-wrap justify-center content-start gap-4">
+                        {filteredProducts.map((product, index) => (
                             <ProductCard product={product} key={product.productId || index} />
                         ))}
                     </div>
                 )}
 
                 {/* Empty State */}
-                {!loading && !searching && products.length === 0 && (
+                {!loading && filteredProducts.length === 0 && (
                     <div className="w-full max-w-md mx-auto my-12 p-8 rounded-3xl bg-white/5 backdrop-blur-md border border-white/10 text-center flex flex-col items-center">
                         <div className="text-5xl mb-4">🔍</div>
                         <h2 className="text-2xl font-bold text-white mb-2">No Products Found</h2>
                         <p className="text-gray-400 text-sm mb-6 leading-relaxed">
-                            We couldn't find any products matching your search criteria. Try a different keyword or reset the filter.
+                            {query.trim()
+                                ? `We couldn't find any products matching "${query.trim()}".`
+                                : "We couldn't find any products in this category."}
                         </p>
                         <button
                             onClick={handleReset}
