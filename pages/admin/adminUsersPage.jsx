@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import LoadingAnimation from "../../src/components/loadingAnimation.jsx";
 import BlockUserModal from "../../src/components/blockUserModal.jsx";
 import ChangeRoleOfUserModal from "../../src/components/changeRoleOfUserModal.jsx";
+import { LuSearch, LuX } from "react-icons/lu";
 
 export default function AdminUsersPage() {
 
@@ -13,21 +14,40 @@ export default function AdminUsersPage() {
     const [totalPages, setTotalPages] = useState(1)
     const [totalUsers, setTotalUsers] = useState(0)
     const [pageSize, setPageSize] = useState(10)
+    const [searchQuery, setSearchQuery] = useState("")
+    const [appliedSearch, setAppliedSearch] = useState("")
 
     useEffect(() => {
-        api.get(`/users/${pageSize}/${currentPage}`, {
+        if (!isLoading) return;
+        const queryParam = appliedSearch ? `?search=${encodeURIComponent(appliedSearch)}` : ""
+        api.get(`/users/${pageSize}/${currentPage}${queryParam}`, {
             headers: {
                 Authorization: "Bearer " + token
             }
         }).then((response) => {
-            if (isLoading) {
-                setUsers(response.data.users)
-                setTotalPages(response.data.totalPages)
-                setTotalUsers(response.data.totalCount)
-                setIsLoading(false)
-            }
+            setUsers(response.data.users || [])
+            setTotalPages(response.data.totalPages || 1)
+            setTotalUsers(response.data.totalCount || 0)
+        }).catch((err) => {
+            console.error("Failed to load users:", err)
+        }).finally(() => {
+            setIsLoading(false)
         })
-    }, [isLoading])
+    }, [isLoading, appliedSearch, currentPage, pageSize, token])
+
+    const handleSearchSubmit = (e) => {
+        e.preventDefault()
+        setAppliedSearch(searchQuery.trim())
+        setCurrentPage(1)
+        setIsLoading(true)
+    }
+
+    const handleClearSearch = () => {
+        setSearchQuery("")
+        setAppliedSearch("")
+        setCurrentPage(1)
+        setIsLoading(true)
+    }
 
     return (
         <div className="w-full min-h-full bg-[#020817] text-white relative overflow-hidden flex flex-col p-4 sm:p-8 pb-36">
@@ -43,41 +63,76 @@ export default function AdminUsersPage() {
                 )}
 
                 {/* Top Control Bar */}
-                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-wrap items-start sm:items-center justify-between gap-4 mb-6 shadow-xl">
-                    <div>
-                        <h1 className="text-2xl sm:text-3xl font-black">
-                            All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Users</span>
-                        </h1>
-                        <p className="text-xs sm:text-sm text-gray-400 mt-1">
-                            Total {totalUsers} registered user{totalUsers !== 1 ? "s" : ""}
-                        </p>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                        <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs sm:text-sm text-gray-300">
-                            <label className="text-gray-400">Items/page:</label>
-                            <select
-                                className="bg-transparent text-cyan-400 font-semibold cursor-pointer outline-none [&>option]:bg-[#020817] [&>option]:text-white"
-                                value={pageSize}
-                                onChange={(e) => {
-                                    setPageSize(Number(e.target.value));
-                                    setIsLoading(true);
-                                }}
-                            >
-                                <option value={5}>5</option>
-                                <option value={10}>10</option>
-                                <option value={15}>15</option>
-                                <option value={20}>20</option>
-                            </select>
+                <div className="w-full bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl p-4 sm:p-5 flex flex-col gap-4 mb-6 shadow-xl">
+                    <div className="flex flex-wrap items-center justify-between gap-4">
+                        <div>
+                            <h1 className="text-2xl sm:text-3xl font-black">
+                                All <span className="bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 bg-clip-text text-transparent">Users</span>
+                            </h1>
+                            <p className="text-xs sm:text-sm text-gray-400 mt-1">
+                                Total {totalUsers} registered user{totalUsers !== 1 ? "s" : ""}
+                                {appliedSearch && (
+                                    <span className="text-cyan-400 font-medium ml-1">
+                                        (matching "{appliedSearch}")
+                                    </span>
+                                )}
+                            </p>
                         </div>
 
-                        <button
-                            className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all"
-                            onClick={() => setIsLoading(true)}
-                        >
-                            Refresh
-                        </button>
+                        <div className="flex items-center gap-3">
+                            <div className="flex items-center gap-2 bg-white/5 border border-white/10 px-3 py-1.5 rounded-xl text-xs sm:text-sm text-gray-300">
+                                <label className="text-gray-400">Items/page:</label>
+                                <select
+                                    className="bg-transparent text-cyan-400 font-semibold cursor-pointer outline-none [&>option]:bg-[#020817] [&>option]:text-white"
+                                    value={pageSize}
+                                    onChange={(e) => {
+                                        setPageSize(Number(e.target.value));
+                                        setCurrentPage(1);
+                                    }}
+                                >
+                                    <option value={5}>5</option>
+                                    <option value={10}>10</option>
+                                    <option value={15}>15</option>
+                                    <option value={20}>20</option>
+                                </select>
+                            </div>
+
+                            <button
+                                className="bg-gradient-to-r from-cyan-500 via-blue-600 to-purple-600 text-white px-5 py-2 rounded-xl text-xs sm:text-sm font-semibold cursor-pointer shadow-lg shadow-blue-500/25 hover:shadow-cyan-500/40 hover:scale-105 active:scale-95 transition-all"
+                                onClick={() => setIsLoading(true)}
+                            >
+                                Refresh
+                            </button>
+                        </div>
                     </div>
+
+                    {/* Search Form */}
+                    <form onSubmit={handleSearchSubmit} className="relative flex items-center bg-white/5 border border-white/10 rounded-xl px-3.5 py-2 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-400/20 transition-all">
+                        <LuSearch className="text-gray-400 text-base shrink-0 mr-3 pointer-events-none" />
+                        <input
+                            type="text"
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            placeholder="Search by user email, first name, last name..."
+                            className="w-full bg-transparent text-white placeholder-gray-400 text-xs sm:text-sm outline-none"
+                        />
+                        {searchQuery && (
+                            <button
+                                type="button"
+                                onClick={handleClearSearch}
+                                className="p-1 text-gray-400 hover:text-white transition-colors cursor-pointer mr-2"
+                                title="Clear search"
+                            >
+                                <LuX className="text-base" />
+                            </button>
+                        )}
+                        <button
+                            type="submit"
+                            className="bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white px-4 py-1.5 rounded-lg text-xs font-semibold cursor-pointer shadow-md transition-all active:scale-95 shrink-0"
+                        >
+                            Search
+                        </button>
+                    </form>
                 </div>
 
                 {/* Users Table */}
@@ -96,7 +151,7 @@ export default function AdminUsersPage() {
                         </thead>
 
                         <tbody className="divide-y divide-white/5 text-xs sm:text-sm text-gray-300">
-                            {users.map((item, index) => (
+                            {users.map((item) => (
                                 <tr key={item.email} className="hover:bg-white/[0.07] transition-colors">
                                     <td className="p-3">
                                         <img
@@ -137,8 +192,8 @@ export default function AdminUsersPage() {
                                     </td>
                                     <td className="p-3.5">
                                         <div className="flex items-center justify-center gap-2">
-                                            <BlockUserModal refresh={() => { setIsLoading(true) }} user={item} />
-                                            <ChangeRoleOfUserModal refresh={() => { setIsLoading(true) }} user={item} />
+                                            <BlockUserModal refresh={() => setIsLoading(true)} user={item} />
+                                            <ChangeRoleOfUserModal refresh={() => setIsLoading(true)} user={item} />
                                         </div>
                                     </td>
                                 </tr>
@@ -147,7 +202,19 @@ export default function AdminUsersPage() {
                             {users.length === 0 && !isLoading && (
                                 <tr>
                                     <td colSpan="7" className="py-12 text-center text-gray-400">
-                                        No users found.
+                                        {appliedSearch ? (
+                                            <div className="flex flex-col items-center gap-2">
+                                                <p>No users found matching "{appliedSearch}".</p>
+                                                <button
+                                                    onClick={handleClearSearch}
+                                                    className="text-xs text-cyan-400 hover:text-cyan-300 underline cursor-pointer"
+                                                >
+                                                    Clear search
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            "No users found."
+                                        )}
                                     </td>
                                 </tr>
                             )}
